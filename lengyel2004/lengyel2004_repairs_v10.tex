@@ -1,0 +1,1433 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,tikz-cd,hyperref,needspace}
+\hypersetup{hidelinks}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\C}{\mathcal C}\newcommand{\D}{\mathcal D}\newcommand{\B}{\mathcal B}
+\newcommand{\dom}{\operatorname{dom}}\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\It}{\operatorname{It}}\newcommand{\Tur}{\operatorname{Tur}}
+\newcommand{\dist}{\operatorname{dist}}\newcommand{\ass}{\operatorname{ass}}
+\title{Corrections to\\\emph{More existence theorems for recursion categories}}
+\author{}\date{20 October 2026; version 10}
+\begin{document}\maketitle
+\begin{abstract}
+We give corrected proofs of the existence theorems in \emph{More existence theorems for recursion categories}. The universal-machine comparison includes equality of partial domains and nontermination. We prove connected-image and domain-union results under explicitly stated stability assumptions. Direct proofs establish the coalgebra application, including its partial-map structure, iteration, and isotype construction. We also prove the finite-generation and range-representation results and give counterexamples concerning arbitrary halting domains, continuity, frame independence, and categorical well-poweredness.
+\end{abstract}
+
+\section{Introduction and conventions}\label{sec:framework}
+Theorems 21 and 26 of \emph{More existence theorems for recursion categories} \cite{L} assert that a uniformly generated isotypical category of total maps has a recursion-category completion. We prove these results by comparing finite computations on connected domains and treating nontermination explicitly. The comparison uses a faithful iteration functor into a separated category.
+
+Sections~\ref{sec:objects}--\ref{sec:completion} give the existence proofs. Section~\ref{sec:projected-ranges} treats direct images and connectedness under an additional stability hypothesis for domain unions. Sections~\ref{sec:coalgebra-structure}--\ref{sec:coalgebraexistence} prove the coalgebra application directly. Section~\ref{sec:other-corrections} gives the remaining corrections, and Appendices~\ref{sec:catalogue} and~\ref{sec:range-representation} prove the finite-generation and range-representation results. Numbers and page references prefixed by ``original'' refer to \cite{L}.
+
+Composition $gf$ means first $f$, then $g$. Products and coproducts
+have fixed left-associated brackets; canonical associators are inserted
+when brackets change. All product and coproduct structures below are
+binary unless another arity is specified.
+
+\subsection{Domains, near products, and coproducts}
+An arrow $f:X\to Y$ in a \emph{restriction category} has a specified
+\emph{domain} $\dom f:X\to X$. The domain operation satisfies
+\begin{align}
+ f\dom f&=f,\tag{R1}\\
+ \dom f\dom g&=\dom g\dom f,\tag{R2}\\
+ \dom(g\dom f)&=\dom g\dom f,\tag{R3}\\
+ (\dom g)f&=f\dom(gf).\tag{R4}
+\end{align}
+In (R2)--(R3), $f$ and $g$ have the same source; in (R4),
+$f:X\to Y$ and $g:Y\to Z$. A \emph{domain on $X$} is an arrow
+$a:X\to X$ with $\dom a=a$. Domains are commuting idempotents.
+They form a meet semilattice $\operatorname{Dom}(X)$, with
+$a\leq b$ if $ab=a$, meet $ab$, and greatest element $1_X$.
+An arrow is \emph{total} if $\dom f=1_X$; total arrows form the
+wide subcategory $\C_T$. For parallel arrows, the restriction order
+is $f\leq g$ if $f=g\dom f$.
+
+A $P$-category can be described as a restriction category with chosen binary
+\emph{restriction products}. Such a product $X\boxtimes Y$ has total
+projections $p_0:X\boxtimes Y\to X$ and
+$p_1:X\boxtimes Y\to Y$. For $f:Z\to X$ and $g:Z\to Y$ there
+is a unique pairing $\langle f,g\rangle:Z\to X\boxtimes Y$ with
+\[
+ p_0\langle f,g\rangle=f\dom g,\qquad
+ p_1\langle f,g\rangle=g\dom f,\qquad
+ \dom\langle f,g\rangle=\dom f\dom g.
+\]
+The near product of arrows is
+$f\boxtimes g=\langle fp_0,gp_1\rangle$, and
+$\Delta_X=\langle1_X,1_X\rangle$ is the diagonal. In the
+near-product presentation of a $P$-category, the domain is
+\[
+ \dom f=p_0(1_X\boxtimes f)\Delta_X.
+\]
+The full projection and diagonal equations give (R1)--(R4) and the
+pairing property above; conversely, that property gives the
+near-product structure and its coherent associator and symmetry.
+For $h:Z\to X\boxtimes Y$, the reconstruction equation is
+\[
+ \langle p_0h,p_1h\rangle=h,
+ \qquad
+ (p_0^{X,Y}\boxtimes p_1^{X,Y})\Delta_{X\boxtimes Y}
+ =1_{X\boxtimes Y}.
+\]
+The second identity is the general pairing axiom printed on original p.~4; it is also required in the axiom list on p.~3, whose displayed triangle treats only equal factors. On total arrows the restriction product is a categorical binary
+product, written $\times$. A $B$-category means a category with
+chosen binary products.
+
+A $P$-category is \emph{prodominical} if it has zero arrows
+$0_{X,Y}:X\to Y$, satisfying $g0f=0$ whenever the composites are
+defined, and $f\boxtimes0=0$. Then $\dom0=0$, the least domain. More generally, zeros in a restriction category are called \emph{restriction zeros} when $\dom0_{X,Y}=0_{X,X}$.
+An object is \emph{nonzero} if $1_X\ne0_{X,X}$.
+A binary \emph{restriction coproduct} is a coproduct $X+Y$ whose
+injections $i_0,i_1$ are total. We write $[f,g]$ for copairing and
+$\nabla=[1,1]$ for the codiagonal. A $P^+$-category has chosen
+binary restriction coproducts for which
+\[
+ [1_X\boxtimes i_0,1_X\boxtimes i_1]:
+ (X\boxtimes Y)+(X\boxtimes Z)\longrightarrow X\boxtimes(Y+Z)
+\]
+is invertible; its inverse is $\dist$. A $B^+$-category has the
+corresponding binary products, coproducts, and distributivity
+isomorphisms in an ordinary category. The notation $P\Sigma$ or
+$B\Sigma$ adds coproducts indexed by $\mathbb N$ and distributivity
+over those coproducts.
+
+\subsection{Ranges, unions, and iteration}
+A domain $b$ on $Y$ \emph{receives} $f:X\to Y$ if $bf=f$.
+A \emph{range} of $f$ is a domain $r=\ran f$ that receives $f$
+and has the following property: for every pair of parallel arrows
+$u,v:Y\to Z$,
+\[
+ uf=vf\quad\Longrightarrow\quad ur=vr.
+\]
+It is unique and is the least domain receiving $f$. A category
+\emph{has ranges} if every arrow has a range. An $rP$-category is
+a $P$-category with ranges satisfying
+$\ran(f\boxtimes g)=\ran f\boxtimes\ran g$.
+
+For domains $a_n$ on $X$, a \emph{strong union}
+$a=\bigcup_{n\geq0}a_n$ is a domain with $a_n\leq a$ for every
+$n$ such that, for all parallel $u,v:X\to Y$,
+\[
+ ua_n=va_n\text{ for every }n
+ \quad\Longrightarrow\quad ua=va.
+\]
+This determines $a$ uniquely and makes it the join of the $a_n$.
+We use \emph{union} in this strong sense. Such unions are
+\emph{product-stable} if, for every domain $b$,
+\[
+ b\boxtimes\bigcup_n a_n=\bigcup_n(b\boxtimes a_n).
+\]
+
+A \emph{partial monomorphism} $f:X\to Y$ satisfies
+$fu=fv\Longrightarrow(\dom f)u=(\dom f)v$ for all parallel
+$u,v:Z\to X$. A \emph{section} of $f$ is an arrow $s:Y\to X$
+with $fs=\dom s$ and $fsf=f$. The \emph{weak axiom of choice}
+asserts that every partial monomorphism has a section.
+
+An \emph{iteration category} is a prodominical $P^+$-category with
+ranges, distributive domain lattices, and countable strong domain
+unions, together with the following iteration operation.
+For a total $f:A\to A$ and a domain $e$ on $A$ with $fe=e$, put
+$d_n=\dom(ef^n)$, where $f^0=1_A$. There is an arrow
+$\It(f,e):A\to A$ satisfying
+\[
+ \dom\It(f,e)=\bigcup_{n\geq0}d_n,\qquad
+ e\It(f,e)=\It(f,e),\qquad
+ \It(f,e)d_n=f^nd_n.
+\]
+These equations determine the arrow uniquely. For total
+endomorphisms $f:A\to A$ and $g:B\to B$, and domains $e,d$
+fixed by $f,g$, the operation also satisfies
+\begin{align*}
+ \It(f\times g,e\boxtimes d)&=\It(f,e)\boxtimes\It(g,d),\\
+ \It(f+g,e+d)&=\It(f,e)+\It(g,d).
+\end{align*}
+
+A domain $a$ is \emph{connected} if $a=b\vee c$ and $bc=0$
+imply $b=0$ or $c=0$. A category is \emph{separated} if parallel
+arrows $u,v:X\to Y$ are equal whenever $ua=va$ for every
+connected domain $a$ on $X$. An \emph{iteration functor}
+$L:\C\to\D$ preserves zero arrows, binary coproducts, domains,
+and iteration. Coproduct preservation includes the injections and
+copairings, up to the specified comparison isomorphisms. Domain preservation implies preservation of total arrows. The iteration condition is $L\It(f,e)=\It(Lf,Le)$. The relative separation hypothesis is that $L$ is faithful and $\D$ is separated.
+
+\subsection{Formally free semigroups}\label{sec:formal-semigroups}
+A $B^\#$-category is a $B^+$-category with an endofunctor $\#$
+and seven natural transformations
+\begin{gather*}
+ m_X:X^\#\times X^\#\to X^\#,
+ \qquad j_X:X\to X^\#,
+ \qquad e_X:X^{\#\#}\to X^\#,\\
+ l_X:X^\#\to X+(X\times X^\#),
+ \qquad r_X:X^\#\to(X^\#\times X)+X,\\
+ \operatorname{par}_{X,Y}:X\times Y^\#\to(X\times Y)^\#,
+ \qquad
+ \operatorname{wd}_{X,Y}:(X+Y)^\#\to D_{X,Y},
+\end{gather*}
+where
+\begin{align*}
+ D_{X,Y}={}&X^\#+Y^\#+(X^\#\times Y^\#)^\#
+ +(Y^\#\times X^\#)^\#\\
+ &+(Y^\#\times(X^\#\times Y^\#)^\#)
+ +(X^\#\times(Y^\#\times X^\#)^\#).
+\end{align*}
+The multiplication $m_X$ is associative, and naturality makes
+each $f^\#$ a semigroup homomorphism. The transformations $j,e$
+give a monad, and $e_X$ is a semigroup homomorphism; explicitly,
+\begin{gather*}
+ e_Xj_{X^\#}=1_{X^\#}=e_X(j_X)^\#,
+ \qquad e_Xe_{X^\#}=e_X(e_X)^\#,\\
+ e_Xm_{X^\#}=m_X(e_X\times e_X).
+\end{gather*}
+The maps $l_X,r_X$ are respectively inverse to
+\[
+ [j_X,m_X(j_X\times1_{X^\#})],
+ \qquad [m_X(1_{X^\#}\times j_X),j_X].
+\]
+The parameter equation is
+\[
+ (p_1^{X,Y})^\#\operatorname{par}_{X,Y}=p_1^{X,Y^\#}.
+\]
+To specify word decomposition, put $W=X+Y$,
+$u=i_0^\#:X^\#\to W^\#$, $v=i_1^\#:Y^\#\to W^\#$, and
+\[
+ a=e_W\bigl(m_W(u\times v)\bigr)^\#,
+ \qquad b=e_W\bigl(m_W(v\times u)\bigr)^\#.
+\]
+Then $\operatorname{wd}_{X,Y}$ is inverse to
+\[
+ [u,v,a,b,m_W(v\times a),m_W(u\times b)]:D_{X,Y}\to W^\#.
+\]
+These are the formally free semigroup axioms of~\cite{H}.
+A $B^\#$-functor preserves $\times,+,\#$ and their specified
+structural maps. The notation $B^\#(S)$ denotes the smallest
+subcategory containing a set $S$ of arrows and closed under these
+operations and structural maps.
+
+\subsection{Isotypes, frames, and catalogues}
+A category is an \emph{isotype}, or \emph{isotypical}, if any two
+of its objects are isomorphic. An object $X$ of a $B^\#$-category
+is isotypical if it is isomorphic to $X\times X$, $X+X$, and
+$X^\#$. A \emph{frame} $b$ at $X$ consists of chosen isomorphisms
+\[
+ b_\times:X\to X\times X,\qquad
+ b_+:X\to X+X,\qquad b_\#:X\to X^\#,
+\]
+together with their inverses. The notation $\B=\B\langle X\rangle$
+means that the objects are formal expressions generated by $X$
+under $\times,+,\#$; the frame gives isomorphisms between these
+objects. When distinct expressions have the same interpretation in
+an ambient category, they retain separate object labels and the
+corresponding ambient hom-sets.
+
+Let $t:W\boxtimes X\to X$ be an arrow in a $P$-category, and
+let $\B$ be a subcategory containing the relevant objects.
+The \emph{uniform list} catalogued by $t$ with indices in $\B$ is
+\[
+ \mathcal L(\B;t)=
+ \{f:X\to X:\ t(g\boxtimes1_X)=fp_1
+ \text{ for some total }g:X\to W\text{ in }\B\}.
+\]
+Here $g$ is an \emph{index} for $f$ and $t$ is a \emph{catalogue}.
+An isotypical $B^\#$-subcategory $\B=\B\langle X\rangle$ of
+$\C_T$ is \emph{uniformly generated} if, for some frame $b$ and
+some catalogue $t:W\times X\to X$ in $\B$,
+\[
+ \B=B^\#\bigl(b\cup\mathcal L(\B;t)\bigr).
+\]
+In this definition the catalogue and all its indices are total.
+
+\subsection{Turing developments and recursion categories}
+A \emph{Turing datum} in an iteration category consists of total
+arrows $u:A\to W$ and $v:W\to W+B$. Its \emph{Turing
+development} is
+\[
+ \Tur(u,v)=[0_{W,B},1_B]\,
+ \It\bigl([v,i_1],0_{W,W}+1_B\bigr)i_0u:A\to B.
+\]
+The endomorphism $[v,i_1]$ of $W+B$ is total and fixes the
+halting domain $0_{W,W}+1_B$. For a $B^+$-subcategory
+$\B\subseteq\C_T$, write $\Tur(\B)$ for the objects of $\B$
+and the developments of data in $\B$. Under the separation
+hypotheses, Lemma~\ref{lem:completion} establishes closure under
+composition.
+
+A \emph{Turing morphism} in a prodominical isotype is an arrow
+$t:W\boxtimes X\to Y$ such that, for every object $V$ and every
+arrow $f:V\boxtimes X\to Y$, there is a total $g:V\to W$ with
+\[
+ t(g\boxtimes1_X)=f.
+\]
+A \emph{recursion category} is a prodominical isotype with a
+Turing morphism. In the isotypical form used below, a \emph{weak
+Turing morphism} is an arrow $\alpha:X\boxtimes X\to X$ such
+that every $f:X\to X$ has a total index $g:X\to X$ with
+$\alpha(g\boxtimes1_X)=fp_1$. The proof of
+Theorem~\ref{thm:main} constructs a Turing morphism from this
+weak form.
+
+Proposition~\ref{prop:catalogue} proves that uniform generation supplies a total catalogue $s:X\times X\to X$ in $\B$ whose uniform list generates the endomorphism semigroup $\B(X,X)$. This is the form of original Lemma 7 (p.~11) used in the existence proof; compare Heller's Proposition 4.4~\cite{H}.
+
+\section{Objects and the choice of catalogue}\label{sec:objects}
+\begin{proposition}[Original Proposition 2]\label{prop:formal-objects}
+Let $\C$ be a small $B^\#$-category, let $D_0$ be an algebra for the object operations $\times,+,\#$, and let $F_0:D_0\to\C_0$ preserve those operations. There is a $B^\#$-category $\D$ with object algebra $D_0$ and a fully faithful $B^\#$-functor $F:\D\to\C$ extending $F_0$. The pair is unique up to the unique isomorphism over $\C$ that is the identity on $D_0$.
+\end{proposition}
+\begin{proof}
+Define $\D(A,B)=\C(F_0A,F_0B)$, with arrows tagged by their source and target in $D_0$. Identities and composition are those of $\C$. Define the arrow operations and all structural components by their counterparts in $\C$. Their types agree because $F_0$ preserves the object operations. Every required equation holds because it holds in $\C$. The arrow map of $F$ forgets the tags and is bijective on each hom-set. For any other such fully faithful extension, the inverse hom-set bijections give the unique isomorphism over $\C$.
+\end{proof}
+
+Choose a catalogue $s:X\times X\to X$ in $\B$ whose uniform list $\mathcal L(\B;s)$ generates $\B(X,X)$ as a semigroup, as provided by Proposition~\ref{prop:catalogue}. Fix a frame at $X$ and use this catalogue in the machine construction below. This specifies the choice in original Section 3.1 (p.~20) needed for the factorization in original Lemma 23 (p.~22).
+
+For the catalogue of Proposition~\ref{prop:catalogue}, every $b_+^{-1}f$, for $f:X\to X+X$ in $\B$, is a nonempty finite composite $f_1\cdots f_k$ of members of that list. Here $b_+:X\to X+X$ is the coproduct frame isomorphism. The integer $k$ is positive, including when the composite represents the identity.
+
+\section{Finite termination on a connected domain}\label{sec:termination}
+A domain $e$ on $B$ is a \emph{coproduct-summand domain} if, for a total isomorphism $c:B\to B_0+B_1$, it has the form $c^{-1}(1_{B_0}+0_{B_1})c$. Its complementary summand domain is $e^c=c^{-1}(0_{B_0}+1_{B_1})c$. These are the halting domains used below.
+
+\begin{lemma}\label{lem:splitpullback}
+Let $\C$ be a prodominical $P^+$-category with ranges and distributive domain lattices. If $e,e^c$ are complementary coproduct-summand domains on $B$ and $h:A\to B$ is a partial arrow, then $\dom(eh)$ and $\dom(e^ch)$ have meet zero and join $\dom h$.
+\end{lemma}
+\begin{proof}
+Put $a_0=\dom h$, $\gamma=\langle1_A,h\rangle:A\to A\boxtimes B$, $r=\ran\gamma$, and $\sigma=p_0r:A\boxtimes B\to A$. The restriction identities and totality of $p_0$ give $p_0\gamma=a_0$, $\sigma\gamma=a_0$, and $\dom\sigma=r$. Since $\gamma p_0\gamma=\gamma$, range arrow-determination gives $\gamma\sigma=r$.
+
+Thus the assignments $b\mapsto\sigma b\gamma$ and $a\mapsto\gamma a\sigma$ are inverse order isomorphisms between the domain intervals $[0,r]$ and $[0,a_0]$. Their values are domains: for example, restriction axiom R4 gives $\gamma a\sigma=r\dom(a\sigma)=\dom(a\sigma)$ when $a\leq a_0$. The other direction follows in the same way.
+
+Distributivity of the near product over coproducts makes $1_A\boxtimes e$ and $1_A\boxtimes e^c$ complementary coproduct-summand domains. Their meets with $r$ are complementary in $[0,r]$, by distributivity of the domain lattice. Transporting these meets through the order isomorphism gives $\dom(eh)$ and $\dom(e^ch)$. Indeed, $(1_A\boxtimes e)\gamma=\gamma\dom(eh)$ by the restriction-pairing identities. This proves the assertion.
+\end{proof}
+
+\begin{lemma}\label{lem:dichotomy}
+Let $\C$ be an iteration category, let $g:B\to B$ be total, and let $d$ be a coproduct-summand domain with $gd=d$. Let $h:A\to B$ be a partial arrow and let $a\leq\dom h$ be a nonzero connected domain. Exactly one of the following holds:
+\begin{enumerate}
+\item $a\leq\dom(dg^m h)$ for some $m\geq0$, and $\It(g,d)ha=g^mha$;
+\item $\It(g,d)ha=0$.
+\end{enumerate}
+In the second case $a\dom(\It(g,d)h)=0$.
+\end{lemma}
+\begin{proof}
+Write $b_m=\dom(dg^m)$ and $c_m=\dom(dg^mh)$. Since $g$ is total, $\dom(g^mh)=\dom h$. Lemma~\ref{lem:splitpullback} makes $c_m$ complemented in $[0,\dom h]$. Intersecting with $a$ and using connectedness shows that either $a\leq c_m$ or $ac_m=0$.
+
+In the first case, $b_mha=ha$, so the iteration equation gives the stated finite value. This value is nonzero because $g$ is total and $\dom(ha)=a\ne0$.
+
+If $ac_m=0$ for every $m$, then R4 gives $b_mha=hc_ma=0$. Put $\beta=\ran(ha)$. Range arrow-determination yields $b_m\beta=0$; the commuting-domain law gives $\beta b_m=0$. The domain $D=\dom\It(g,d)$ is the union of the $b_m$. Comparing $\beta$ and $0$ on that union gives $\beta D=0$. Hence $\It(g,d)ha=\It(g,d)D\beta ha=0$. Taking restrictions gives the last assertion.
+\end{proof}
+
+\begin{lemma}[Iteration comparison]\label{lem:simulation}
+Let $\D$ be a separated iteration category. Let $f:A\to A$, $g:B\to B$, and $h:A\to B$ be total. Let $e$ and $d$ be coproduct-summand domains on $A$ and $B$, respectively, with $fe=e$ and $gd=d$. Suppose that, for a positive integer $k$,
+\begin{equation}\label{eq:simulation}
+g^kh=hf,\qquad \dom(dh)=e.
+\end{equation}
+Then $\It(g,d)h=h\It(f,e)$.
+\end{lemma}
+\begin{proof}
+Let $a$ be a nonzero connected domain on $A$. Apply Lemma~\ref{lem:dichotomy} to $(f,e,1_A,a)$ and $(g,d,h,a)$.
+
+If $a\leq\dom(ef^n)$, then $f^na=ef^na$. The identity $dh=he$, which follows from R4, shows that $g^{kn}ha=hf^na$ is received by $d$. The two iterates therefore agree on $a$, with value $hf^na$.
+
+Conversely, if $a\leq\dom(dg^mh)$, choose $n$ with $kn\geq m$. The equation $gd=d$ implies that $g^{kn}ha$ is received by $d$. This arrow is $hf^na$ by~\eqref{eq:simulation}. Taking domains in $dhf^na=hf^na$ and using totality gives $a\leq\dom(ef^n)$. Thus the two computations terminate together. Otherwise the dichotomy makes both restrictions zero. Separation proves the result.
+\end{proof}
+
+The first identity in~\eqref{eq:simulation} is expressed by the typed square
+\[
+\begin{tikzcd}
+A\arrow[r,"f"]\arrow[d,"h"']&A\arrow[d,"h"]\\
+B\arrow[r,"g^k"']&B.
+\end{tikzcd}
+\]
+The second identity is independent of that square: it says that $h$ reflects as well as preserves the halting domain.
+
+If these data belong to $\C$ and $L:\C\to\D$ is a faithful iteration functor, their images satisfy the same identities. The images of coproduct-summand domains are coproduct-summand domains because $L$ preserves zero arrows, coproducts, and isomorphisms. Apply the lemma in $\D$ and then faithfulness.
+
+\subsection{Failure for an arbitrary halting domain}
+The halting-domain hypothesis in original Proposition 15 cannot be replaced
+by an arbitrary domain, even if the initial connected domain is
+disjoint from it. A coalgebra for the identity functor is a set with an endomorphism, and its morphisms commute with those endomorphisms. A partial coalgebra map has an invariant subset as domain and a coalgebra morphism as its value map; composition is ordinary partial composition. Work in the resulting category $\operatorname{Par}(\operatorname{Coalg}(\mathrm{Id}_{\mathbf{Set}}),\operatorname{Mono})$, and let $A=(\mathbb N,s)$ with
+$s(n)=\max(n-1,0)$. On $Z=A+A$, let $a$ be the domain of the first
+summand, let $e$ be the partial identity on $\{i_1(0)\}$, and put
+$f=[i_1,i_1s]:Z\to Z$. This is a total coalgebra map, $fe=e$, and
+$ae=0$. Every nonempty subcoalgebra of the first summand contains
+$i_0(0)$, so $a$ is nonzero and connected.
+
+For $k\geq1$,
+\[
+f^k(i_0(n))=i_1(\max(n-k+1,0)),\qquad
+f^k(i_1(n))=i_1(\max(n-k,0)).
+\]
+The domains $\dom(ef^k)$ therefore have union $Z$, and
+$\It(f,e)$ is the total constant map with value $i_1(0)$.
+But $f^k(i_0(k))=i_1(1)$ for every $k\geq1$, so
+$f^ka\ne\It(f,e)a$ for every finite $k$. The complement of $e$
+is not a subcoalgebra, since it contains $i_1(1)$ but not
+$i_1(s(1))=i_1(0)$. Thus $e$ is not a coproduct-summand domain.
+
+\section{The machine and its finite iterates}\label{sec:machine}
+Let $\B$ be a uniformly generated isotypical $B^\#$-subcategory of the total maps of an iteration category $\C$, with a frame at $X$. Choose $s$ as in Section~\ref{sec:objects}. Put $P=X^\#$ and $S=(P\times P)\times X$. Write $j:X\to P$ and $m:P\times P\to P$ for the singleton and concatenation maps, and $r:P\to(P\times X)+X$ for right decomposition. These are the specified $B^\#$-structure maps. Put $\bar\imath_0=b_+^{-1}i_0:X\to X$.
+
+Define a total $w:S\to S+X$ as follows. Apply $r$ to the second $P$-factor and distribute over the coproduct. The resulting two summands have coordinates $(a,b,c,x)$ in $(P\times P)\times(X\times X)$ and $(a,c,x)$ in $P\times(X\times X)$. On the first summand use
+\[
+(a,b,c,x)\longmapsto i_S(a,b,s(c,x)).
+\]
+On the second, apply $b_+s$ to $(c,x)$. Its first coproduct component, with value $y$, is sent to $i_S(a,a,y)$; its second is sent to $i_Xy$. Each displayed rule abbreviates a total product pairing followed by a coproduct injection; the case distinction is the copairing after distributivity. Thus it defines an arrow in $\B$.
+
+Let $G=[w,i_X]:S+X\to S+X$, let $d=0_S+1_X$, and let $u=[0_{S,X},1_X]:S+X\to X$. The entry map is $v=\Delta_P\times\bar\imath_0:P\times X\to S$. Define
+\begin{equation}\label{eq:tau}
+\tau=u\It(G,d)i_Sv=\Tur(v,w):P\times X\to X.
+\end{equation}
+
+Fix a total $f:X\to X+X$ in $\B$. Factor $b_+^{-1}f=f_1\cdots f_k$ using the chosen catalogue, and choose total $g_j:X\to X$ in $\B$ with $s(g_j\times1_X)=f_jp_1$. For arrows $a,b:X\to P$, write $a\star b=m\langle a,b\rangle$. Define $q_j=jg_1\star\cdots\star jg_j:X\to P$ and $q=q_k$.
+
+The right-decomposition identities give $rq_j=i_0\langle q_{j-1},g_j\rangle$ for $j>1$, and $rq_1=i_1g_1$. Applying the first branch of $w$ repeatedly therefore gives, for $0\leq r<k$,
+\begin{equation}\label{eq:prefix}
+G^ri_S(\langle q,q\rangle\times1_X)
+=i_S\bigl(\langle q,q_{k-r}\rangle\times(f_{k-r+1}\cdots f_k)\bigr).
+\end{equation}
+For $r=0$, the empty composite on the right is $1_X$. For $r<k-1$, apply the right-decomposition identity for $q_{k-r}$ and then $s(g_{k-r}\times1_X)=f_{k-r}p_1$ to obtain the next case. At $r=k-1$, the singleton identity for $q_1$ selects the second branch of $w$; its application of $b_+f_1\cdots f_k=f$ either restarts with two copies of $q$ or outputs the result. This proves the final step as well as all intermediate steps, for every $k\geq1$.
+
+For the final step, put $A=X\times(X+X)$, $F=[f,i_1]:X+X\to X+X$, and $T=1_X\times F:A\to A$. Define
+\begin{align*}
+e&=1_X\boxtimes(0_X+1_X),\\
+h&=[\,i_S(\langle q,q\rangle\times1_X),\ i_Xp_1\,]\dist:A\to S+X.
+\end{align*}
+Both $e$ and its complement are coproduct-summand domains under $\dist$. The completed finite calculation is precisely
+\begin{equation}\label{eq:block}
+G^kh=hT,\qquad \dom(dh)=e.
+\end{equation}
+On the running summand the first identity is the last step just proved; on the halting summand both sides are $i_Xp_1$. The second identity follows because the running summand maps totally into $S$ and the halting summand maps totally into $X$.
+
+The auxiliary triangles in the original proof of Claim 25 incorrectly identify $\Delta_Xp_1$ with $1_{X\times X}$. In sets, these maps send $(0,1)$ to $(1,1)$ and $(0,1)$, respectively. The replacement identities, with $\ass:(X\times X)\times X\to X\times(X\times X)$, are
+\[
+(1_X\times p_1)\ass(\Delta_X\times1_X)=1_{X\times X},\qquad
+(\Delta_X\times p_1)\ass(\Delta_X\times1_X)=\Delta_X\times1_X.
+\]
+Both follow by comparing product components, as in the erratum~\cite{E}. The coassociativity equation must likewise include its associator: $\ass(\Delta_X\times1_X)\Delta_X=(1_X\times\Delta_X)\Delta_X$. Equation~\eqref{eq:prefix}, proved by induction through typed pairings, replaces the special calculation for $k=2$ and the phrase that the general case is similar.
+
+\section{Equality of the partial computations}
+Suppose that $L:\C\to\D$ is a faithful iteration functor and that $\D$ is separated. Apply Lemma~\ref{lem:simulation} to $LT,LG,Lh,Le,Ld$ and~\eqref{eq:block}. Preservation of iteration and faithfulness yield
+\begin{equation}\label{eq:iterate}
+\It(G,d)h=h\It(T,e).
+\end{equation}
+Let $z=1_X\times(i_0\bar\imath_0):X\times X\to A$. The entry equality is $hz=i_Sv(q\times1_X)$. By the product identity for iteration,
+\[
+\It(T,e)=1_X\boxtimes\It(F,0_X+1_X).
+\]
+Since $uh=[0,p_1]\dist$, composing~\eqref{eq:iterate} with $u$ on the left and $z$ on the right proves
+\begin{equation}\label{eq:weak}
+\tau(q\times1_X)=\Tur(\bar\imath_0,f)p_1.
+\end{equation}
+This is original Lemma 23, and its image under $L$ is original Lemma 30. Applying $L$ to the finite identities in Section 4 gives original Lemma 32; the products remain inside the argument of $L$. Lemma~\ref{lem:dichotomy} gives equality on every connected domain, including those on which both computations are undefined.
+
+\section{Completion and the existence theorem}\label{sec:completion}
+The finite-execution comparison gives composition and normalization of Turing developments.
+
+\begin{lemma}\label{lem:completion}
+Let $\C,\D$ be iteration categories, with $\D$ separated, and let $L:\C\to\D$ be a faithful iteration functor. Turing developments of total data in a $B^+$-subcategory $\B$ are closed under composition. Every endomorphism $X\to X$ in $\Tur(\B)$, when $\B$ is isotypical with a frame at $X$, can be written as $\Tur(\bar\imath_0,f)$ for a total $f:X\to X+X$ in $\B$.
+\end{lemma}
+\begin{proof}
+For data $u:A\to W$, $v:W\to W+B$, $s:B\to V$, and $t:V\to V+C$, use the combined state $W+V$ and transition
+\[
+r=(1_W+[i_Vs,t])(v+1_V):W+V\to(W+V)+C,
+\]
+with canonical coproduct associations. Entry is $i_Wu$. After applying $L$, test a nonzero connected domain on $LA$. Lemma~\ref{lem:splitpullback} implies that the inverse images of the state summands give complementary domains. Thus the connected source test lies in exactly one summand at each finite step. While it is in $LW$, the combined transition agrees with $Lv$. The first transition out of $LW$ applies $Ls$ and enters $LV$. Thereafter it agrees with $Lt$, and it cannot return to $LW$. A finite combined execution reaches $LC$ if and only if a finite first execution reaches $LB$ and the subsequent second execution reaches $LC$. Their output arrows agree by substitution of the defining transitions. Apply Lemma~\ref{lem:dichotomy} on the original source test. If the first computation terminates, its output followed by $Ls$ is defined on the whole test domain, so the same lemma applies to the second computation with that partial entry arrow. Every other restriction is zero on both sides. Separation and faithfulness prove original Lemma 27, including equality of domains.
+
+For normalization, use an isomorphism $a:W\to X$ in $\B$ to replace arbitrary endomorphism data by $u':X\to X$ and $v':X\to X+X$. Write $\bar\imath_1=b_+^{-1}i_1$, and define the total arrow
+\[
+f=[\,i_0\bar\imath_1u',\ [i_0\bar\imath_1,i_1]v'\,]b_+:X\to X+X.
+\]
+The first summand under $b_+$ is the entry state. Its first step enters the second summand with value $u'$. Each subsequent step is one step of $v'$, encoded in that second summand until termination. On connected domains in $\D$, finite termination and output therefore agree with the original datum, with one extra entry step. The same dichotomy, separation, and faithfulness give $\Tur(\bar\imath_0,f)=\Tur(u',v')$.
+\end{proof}
+
+The next lemma supplies the flattening argument omitted from original
+Lemma 28. The three state summands distinguish entry into an inner
+computation, execution of that computation, and return to the outer loop.
+
+\Needspace{13\baselineskip}
+\begin{lemma}[Flattening a total development]\label{lem:flattening}
+Let $\C,\D$ be iteration categories, with $\D$ separated, and let
+$L:\C\to\D$ be a faithful iteration functor. Suppose that
+\[
+u:X\longrightarrow W,\qquad
+v:W\longrightarrow W+(X+Y)
+\]
+are total and that $t=\Tur(u,v):X\to X+Y$ is total. Put
+$S=(X+W)+X$, with its three injections
+$j_0:X\to S$, $j_W:W\to S$, and $j_1:X\to S$.
+Write $k_S:S\to S+Y$ and $k_Y:Y\to S+Y$ for the final coproduct
+injections. Define the total transition $r:S\to S+Y$ by
+\[
+\begin{aligned}
+rj_0&=k_Sj_Wu,\\
+rj_W&=[k_Sj_W,[k_Sj_1,k_Y]]v,\\
+rj_1&=k_Sj_0.
+\end{aligned}
+\]
+Then
+\begin{equation}\label{eq:flattening}
+\Tur(1_X,t)=\Tur(j_0,r):X\longrightarrow Y.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Preservation of restrictions makes $L$ preserve total arrows.
+Preservation of coproducts, zeros, and iteration gives
+$L\Tur(u,v)=\Tur(Lu,Lv)$ directly from the definition. It therefore
+suffices to prove equality after applying $L$. For the following
+comparison in $\D$, abbreviate the images of the displayed objects
+and arrows by the same letters, using the canonical coproduct
+comparisons.
+
+Write $Q=W+(X+Y)$, with injections
+$\ell_W:W\to Q$, $\ell_O:X+Y\to Q$, and let
+$i_X:X\to X+Y$, $i_Y:Y\to X+Y$ be the outer injections. The
+completed transitions are
+\[
+\widehat v=[v,\ell_O]:Q\to Q,\qquad
+\widehat t=[t,i_Y]:X+Y\to X+Y,\qquad
+\widehat r=[r,k_Y]:S+Y\to S+Y.
+\]
+They fix, respectively, the halting domains
+$e_I=0_W+1_{X+Y}$, $e_O=0_X+1_Y$, and $e_F=0_S+1_Y$.
+
+Fix a nonzero connected domain $a$ on $X$. Every stage of each
+completed transition has restriction $a$ when started on $a$.
+Lemma~\ref{lem:splitpullback}, applied successively to the finitely
+many state summands, shows that such a stage is received by exactly
+one summand. All comparisons below remain on this same source domain.
+
+First consider an inner computation with a current entry
+$h:X\to X$ satisfying $\dom h=a$. Since $t$ is total,
+$\dom(th)=a$, so $th\ne0$. Apply Lemma~\ref{lem:dichotomy} to
+$\widehat v,e_I,\ell_Wuh$ and $a$. The nontermination alternative
+would give $th=0$, and hence cannot occur. Choose the least
+$n\geq1$ for which the inner computation reaches the $X+Y$ summand.
+Its value is
+\begin{equation}\label{eq:flatten-inner-block}
+\widehat v^{\,n}\ell_Wuh=\ell_Oth.
+\end{equation}
+Every earlier stage is received by the $W$ summand. The defining
+equations for $r$ therefore give, by induction through these $n$ steps,
+\begin{equation}\label{eq:flatten-full-block}
+\widehat r^{\,n+1}k_Sj_0h=[k_Sj_1,k_Y]th.
+\end{equation}
+The additional step enters $W$ by $u$. There are two cases. If
+$th=i_Xh'$ for $h':X\to X$ with $\dom h'=a$, one further step
+returns to $k_Sj_0h'$. If $th=i_Yy$ for $y:X\to Y$ with
+$\dom y=a$, the flattened computation has halted with value $y$.
+These alternatives follow from Lemma~\ref{lem:splitpullback} applied
+to $th$, whose restriction is $a$; the components are obtained by
+the corresponding partial coproduct retractions.
+
+Suppose first that the outer computation reaches $Y$ after $k\geq1$ steps,
+and choose the least such $k$. Starting with $h=a$, apply the preceding
+block calculation to each of its $k$ transitions. The first $k-1$
+blocks return to the first $X$ summand and the last reaches $Y$.
+If their inner lengths are $n_1,\ldots,n_k$, the flattened computation
+halts after
+\[
+N=\sum_{j=1}^{k-1}(n_j+2)+(n_k+1)
+\]
+steps, with exactly the same output arrow on $a$. Only finitely many inner computations occur.
+
+Conversely, suppose that the flattened computation reaches $Y$ after
+finitely many steps, and stop at its first such stage. Its sequence of
+summands is determined on the whole domain $a$. The equations defining
+$r$ force that finite sequence to consist of blocks that enter $W$
+from the first $X$, remain in $W$ for some number of steps, and then
+either pass through the third $X$ back to the first, or halt in $Y$.
+For each block, the $W$-steps are precisely successive applications of
+$v$. The finite iteration equation gives
+\eqref{eq:flatten-inner-block} for that block, so its exit is $th$ on
+the current entry $h$, with $\dom h=a$. Reading these exits yields
+a finite outer computation with the same output arrow. This proves
+equivalence of finite termination in both directions.
+
+Apply Lemma~\ref{lem:dichotomy} to the outer and flattened completed
+transitions, with entries $i_X$ and $k_Sj_0$. If a finite termination
+stage exists, their developments agree on $a$ by the preceding
+comparison and both have restriction $a$. Otherwise both developments
+are zero on $a$, and both restriction domains have zero meet with $a$.
+The equality also holds on the zero domain. Separation in $\D$ and
+faithfulness of $L$ now prove~\eqref{eq:flattening}, including equality
+of its partial domains.
+\end{proof}
+
+\Needspace{8\baselineskip}
+\begin{proposition}[Structure and idempotence of completion]
+\label{prop:completion-idempotent}
+Let $\C,\D$ be iteration categories, with $\D$ separated, and let
+$L:\C\to\D$ be a faithful iteration functor. Let $\B$ be a
+$B^+$-subcategory of $\C_T$ with the inherited structural arrows.
+Then $\mathcal K=\Tur(\B)$ is a $+$-prodominical subcategory of
+$\C$ containing $\B$, its total arrows satisfy
+\[
+\mathcal K_T=\mathcal K\cap\C_T,
+\]
+and
+\begin{equation}\label{eq:completion-idempotent}
+\Tur(\mathcal K_T)=\mathcal K.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Lemma~\ref{lem:completion} gives composition. Every arrow
+$f:A\to B$ of $\B$ is $\Tur(1_A,i_Bf)$, by immediate
+termination, and $\Tur(1_A,i_A):A\to B$ is zero, since it never
+reaches the output summand. Here $i_A,i_B$ are the injections into $A+B$. Thus identities, structural arrows,
+and zeros belong to $\mathcal K$.
+
+The product and coproduct identities for iteration give closure under
+near products and coproducts in $\C$. More explicitly, for developments
+with state and output objects $W,B$ and $V,D$, take the product of
+their completed transitions and use distributivity to write its state
+object as
+\[
+(W+B)\times(V+D)
+\cong\bigl((W\times V)+(W\times D)+(B\times V)\bigr)+(B\times D).
+\]
+The completed transition fixes the last summand. Its restriction to
+the other three summands and the entry into $W\times V$ form total
+data in $\B$. The product iteration identity says that their
+development is the near product of the original developments,
+including its domain. Coproducts follow by taking the coproduct of
+the completed transitions and regrouping their state and output
+summands.
+
+All $P$-category equations and the prodominical zero equations are
+inherited. Restrictions are inherited as well: for $f:A\to B$ in
+$\mathcal K$,
+\[
+\dom f=p_0(1_A\boxtimes f)\Delta_A
+\]
+is an arrow of $\mathcal K$ and is its ambient restriction in $\C$.
+Consequently totality in $\mathcal K$ is precisely ambient totality,
+and $\mathcal K_T$ has the inherited $B^+$ structure.
+
+Finally, take a development of total data
+$u:A\to W$, $v:W\to W+B$ in $\mathcal K_T$. By the definition of
+$\mathcal K$, choose total data $a:W\to V$,
+$b:V\to V+(W+B)$ in $\B$ with $v=\Tur(a,b)$.
+Lemma~\ref{lem:flattening} expresses $\Tur(1_W,v)$ as a development
+of total data in $\B$, since its state $W+V+W$ and its transition
+use only coproducts and the arrows $a,b$. Hence
+\[
+\Tur(u,v)=\Tur(1_W,v)u\in\mathcal K
+\]
+by composition closure. This gives
+$\Tur(\mathcal K_T)\subseteq\mathcal K$. The reverse inclusion
+follows from $\B\subseteq\mathcal K_T$, proving
+\eqref{eq:completion-idempotent}. These are all three assertions of
+original Proposition 29.
+\end{proof}
+
+\begin{theorem}[Existence of a recursion-category completion]\label{thm:main}
+Let $\C$ and $\D$ be iteration categories, let $\D$ be separated, and let $L:\C\to\D$ be a faithful iteration functor. Let $\B=\B\langle X\rangle$ be a uniformly generated isotypical $B^\#$-subcategory of the total maps of $\C$, as in Section 1. Then $\Tur(\B)$ is a recursion category.
+\end{theorem}
+\begin{proof}
+Proposition~\ref{prop:completion-idempotent} gives the prodominical structure of $\Tur(\B)$ with inherited coproducts and totality. It is isotypical because it has the same objects as $\B$, whose frame isomorphisms remain total.
+
+Equation~\eqref{eq:weak} and normalization show that every $a:X\to X$ in the completion has a total $q:X\to P$ in $\B$ with $\tau(q\times1_X)=ap_1$. Choose the frame isomorphism $b_\#:X\to P$ and put $\alpha=\tau(b_\#\times1_X):X\times X\to X$. Then every such $a$ has a total $g:X\to X$ in $\B$ satisfying $\alpha(g\times1_X)=ap_1$.
+
+To obtain a Turing morphism, let $b:X\to X\times X$ be the product frame and set
+\[
+\zeta=\alpha(1_X\times b^{-1})\ass_{X,X,X}(b\times1_X):X\times X\to X.
+\]
+Given $\psi:V\times X\to X$ in the completion, choose a total isomorphism $c:V\to X$ in $\B$. Apply the preceding weak universality to $a=\psi(c^{-1}\times1_X)b:X\to X$, obtaining $g$. Define the total index $j=b^{-1}\langle gc,c\rangle:V\to X$. Product pairing and the weak-universality identity give $\zeta(j\times1_X)=\psi$. This is the required Turing property.
+\end{proof}
+
+Appendix~\ref{sec:catalogue} proves the catalogue-generation property from uniform generation. Taking $L$ to be the identity yields the separated-case conclusion.
+
+\section{Corrections to Propositions 20 and 31}\label{sec:projected-ranges}
+Original Propositions 20 (pp.~18--19) and 31 (pp.~29--30) use a projected domain as though it were itself a domain on the target. Its range supplies the correctly typed object. We first give a sufficient hypothesis for that range to be connected.
+
+In a restriction category with ranges and binary restriction coproducts, domains form a distributive lattice: their meet is composition and $a\vee b=\ran[a,b]$. Indeed, the range identity $\ran(cf)=c\ran f$ below gives $c(a\vee b)=ca\vee cb$.
+
+For an arrow $f:X\to Y$ and domains $a$ on $X$ and $b$ on $Y$, put $f_*a=\ran(fa)$ and $f^*b=\dom(bf)$. These direct-image and inverse-image assignments are functorial. When $f$ is total, they also satisfy the adjunction of original Proposition 10. Range arrow-determination gives
+\[
+\ran(g\ran f)=\ran(gf),\qquad
+\ran(bf)=b\ran f
+\]
+for any composable partial $g$ and any domain $b$ on the target of $f$. For the second identity, $b\ran f$ receives $bf$; if $ubf=vbf$, apply range arrow-determination to $ub,vb$ and $f$. Contravariant inverse-image functoriality is the restriction identity $\dom(cgf)=\dom(\dom(cg)f)$. These facts verify direct and inverse image functoriality.
+
+\subsection{Domain unions and inverse images}\label{sec:stable-unions}
+An arrow-determining union is stronger than an order-theoretic supremum. The following consequence of the definition supplies the countable distributivity used in original Proposition 14.
+\begin{lemma}\label{lem:meet-union}
+If $d=\bigcup_n d_n$ is an arrow-determining union of domains on $A$ and $c$ is a domain on $A$, then $cd=\bigcup_n cd_n$ in the same sense.
+\end{lemma}
+\begin{proof}
+Each $cd_n\leq cd$. If $ucd_n=vcd_n$ for every $n$, apply arrow determination of $d$ to $uc,vc$. It gives $ucd=vcd$, as required. In particular, $cd$ is the supremum of the $cd_n$.
+\end{proof}
+
+For the general union calculus, impose the following additional condition:
+\begin{equation}\label{eq:stable-unions}
+1_A\boxtimes\bigcup_n b_n
+=\bigcup_n(1_A\boxtimes b_n),
+\end{equation}
+where both unions are arrow-determining. Intersecting with $a\boxtimes1_B$ and using Lemma~\ref{lem:meet-union} proves stability under product with any domain $a$. For the connected-image statements alone, the disjoint binary version of \eqref{eq:stable-unions} suffices.
+
+\begin{proposition}\label{prop:inverse-unions}
+In a $P$-category with ranges and arrow-determining countable domain unions, condition \eqref{eq:stable-unions} implies preservation of these unions by the inverse-image map of every partial arrow. The same conclusion holds for binary unions, or disjoint binary unions, if the corresponding form of \eqref{eq:stable-unions} is assumed.
+\end{proposition}
+\begin{proof}
+For $h:A\to B$, use the graph data from Lemma~\ref{lem:splitpullback}:
+\[
+a_0=\dom h,\qquad \gamma=\langle1_A,h\rangle,\qquad
+r=\ran\gamma,\qquad \sigma=p_0r,
+\qquad \sigma\gamma=a_0,\quad\gamma\sigma=r.
+\]
+The domain-interval isomorphism $c\mapsto\sigma c\gamma$ also preserves arrow-determining unions. Indeed, if $c=\bigcup_n c_n\leq r$ and
+$u\sigma c_n\gamma=v\sigma c_n\gamma$ for every $n$, compose on the right with $\sigma$. Since $\gamma\sigma=r$ and $c_n\leq r$, this gives $u\sigma c_n=v\sigma c_n$. Arrow determination gives $u\sigma c=v\sigma c$; composing on the right with $\gamma$ proves the required property after transport.
+
+Now let $b=\bigcup_n b_n$ on $B$. Product-stability and Lemma~\ref{lem:meet-union} give
+\[
+r(1_A\boxtimes b)=\bigcup_n r(1_A\boxtimes b_n).
+\]
+Transport this union through $c\mapsto\sigma c\gamma$.
+The restriction-pairing identity
+$(1_A\boxtimes b)\gamma=\gamma\dom(bh)$
+identifies the transported domain with $\dom(bh)$, and similarly for every $b_n$. Thus
+\[
+\dom(bh)=\bigcup_n\dom(b_nh)
+\]
+in the arrow-determination sense. The binary proofs are identical.
+\end{proof}
+
+Conversely, preservation by inverse images of total maps implies \eqref{eq:stable-unions}: take the second projection and use
+$\dom(bp_1)=1_A\boxtimes b$. Thus the product and inverse-image formulations are equivalent at each of the stated scopes.
+
+\subsection{Connected images and projected domains}
+\begin{proposition}[Corrected form of original Proposition 13(i), p.~16]\label{prop:connected-image-conditional}
+Let $\mathcal E$ be a restriction category with restriction zeros, binary restriction coproducts, and ranges. Let $f:X\to Y$ be total, and suppose that $f^*:\operatorname{Dom}(Y)\to\operatorname{Dom}(X)$ preserves disjoint binary joins. If $a\in\operatorname{Dom}(X)$ is connected, then $f_*a=\ran(fa)$ is connected. If $a\ne0$, then $f_*a\ne0$.
+\end{proposition}
+\begin{proof}
+For a total arrow $f$, the receiving equation $bfa=fa$ is equivalent to $a\leq\dom(bf)$, by the restriction identities. Range minimality therefore gives $f_*a\leq b$ if and only if $a\leq f^*b$.
+
+Suppose that $f_*a=c\vee d$, with $cd=0$. The adjunction gives $a\leq f^*(c\vee d)$. By the additional preservation hypothesis and distributivity,
+\[
+a=(a\wedge f^*c)\vee(a\wedge f^*d).
+\]
+The two terms are disjoint because inverse image preserves meets and zero. Connectedness makes one zero, and hence the other equal to $a$. The adjunction gives $f_*a\leq c$ or $f_*a\leq d$, forcing the other summand of its decomposition to be zero. Finally, $f_*a=0$ would imply $fa=0$ and hence $a=\dom(fa)=0$, since $f$ is total.
+\end{proof}
+
+For original Proposition 20, work in a prodominical $P^+$-category $\C$ with ranges, and let $a:V\boxtimes X\to V\boxtimes X$ be a domain and let $p_1:V\boxtimes X\to X$ be the second projection. The composite $p_1a$ is an arrow to $X$, not a domain on $X$; put $\beta=\ran(p_1a)$. For total $\phi:V\to W$ and $\psi:X\to Y+Z$, the correctly typed assertion is
+\[
+\psi\beta\prec 1_Y+0_Z
+\quad\Longleftrightarrow\quad
+\dist(\phi\times\psi)a\prec1_{W\times Y}+0_{W\times Z}.
+\]
+Here $r\prec e$ means $er=r$. Totality of $p_1$ makes $\beta$ nonzero when $a$ is nonzero. If $a$ is connected and $p_1^*:\operatorname{Dom}(X)\to\operatorname{Dom}(V\boxtimes X)$ preserves disjoint binary joins, Proposition~\ref{prop:connected-image-conditional} makes $\beta$ connected.
+
+Let $\C,\D$ be iteration categories and $L:\C\to\D$ a faithful iteration functor. Let $\phi,\psi$ be the total maps of $\C$ just specified. For original Proposition 31, let $a:L(V\boxtimes X)\to L(V\boxtimes X)$ be a domain in $\D$. Use $\beta=\ran((Lp_1)a)$ on $LX$. If $a$ is connected and $(Lp_1)^*:\operatorname{Dom}(LX)\to\operatorname{Dom}(L(V\boxtimes X))$ preserves disjoint binary joins, Proposition~\ref{prop:connected-image-conditional} makes $\beta$ connected. Since $L$ preserves domains, $Lp_1$ is total, so $a\ne0$ implies $\beta\ne0$. Replace the displayed assertion by
+\[
+L\psi\,\beta\prec1_{LY}+0_{LZ}
+\quad\Longleftrightarrow\quad
+L\bigl(\dist(\phi\times\psi)\bigr)a
+ \prec1_{L(W\times Y)}+0_{L(W\times Z)}.
+\]
+To verify this, let $K=L(\dist(\phi\times\psi))$ and let $\pi$ be the copairing of the images of the second projections. Then $\pi K=L\psi Lp_1$. The map $\pi$ is total and takes each summand to its corresponding summand. Consequently the inverse image under $\pi$ of the $LY$ summand is precisely the $L(W\times Y)$ summand; this follows by computing on the two coproduct injections. Thus $Ka$ is received by that summand if and only if $L\psi Lp_1a$ is received by $LY$. Finally, an equality on $Lp_1a$ holds on its range $\beta$ by the defining property of ranges. This proves the assertion. For the connectedness clauses, the disjoint binary form of \eqref{eq:stable-unions} in the ambient category (respectively the target category $\D$) supplies the stated inverse-image hypothesis by Proposition~\ref{prop:inverse-unions}.
+
+\section{The coalgebra structural hypotheses}\label{sec:coalgebra-structure}
+For an endofunctor $F:\mathbf{Set}\to\mathbf{Set}$, an $F$-coalgebra is a set $X$ with a map $\xi:X\to FX$. A coalgebra morphism $h:(X,\xi)\to(Y,\eta)$ satisfies $Fh\,\xi=\eta h$. Write $\mathcal A=\operatorname{Coalg}(F)$ and $U:\mathcal A\to\mathbf{Set}$ for the forgetful functor. A subcoalgebra is an underlying subset whose inclusion is a coalgebra morphism.
+
+The functor $F$ \emph{weakly preserves pullbacks} if, for every pullback $P=A\times_C B$ of sets, the canonical map $FP\to FA\times_{FC}FB$ is surjective. Throughout this section, work in ZFC, assume that $F$ weakly preserves pullbacks, and suppose that $\mathcal A$ has binary products. These hypotheses give the structural assertions of original Propositions 40--45.
+
+\begin{lemma}\label{lem:coalgebra-monos}
+The functor $F$ preserves injections. Monomorphisms in $\mathcal A$ are exactly the morphisms with injective underlying functions, and $U$ creates their pullbacks. The functor $U$ reflects isomorphisms.
+\end{lemma}
+\begin{proof}
+The pullback of an injection $i:S\to B$ along itself has both projections equal to $1_S$. Its image under $F$ is a weak pullback, so $Fi$ is injective.
+
+Let $f:(A,\alpha)\to(B,\beta)$ be a coalgebra morphism, and let $i:(S,\sigma)\hookrightarrow(B,\beta)$ have an injective underlying function. Form the set pullback $P$ with projections $p:P\hookrightarrow A$ and $q:P\to S$. For each $z\in P$, the elements $\alpha(pz)$ and $\sigma(qz)$ have equal images under $Ff$ and $Fi$. Weak-pullback preservation supplies an element of $FP$ projecting to both. It is unique because $Fp$ is injective. These elements define a coalgebra structure on $P$. If a coalgebra cone induces a set map $v:C\to P$, its coalgebra equation follows after composition with the injective map $Fp$. Thus this is the categorical pullback, created by $U$.
+
+Underlying injections are monic because $U$ is faithful. For the converse, let $f:(A,\alpha)\to(B,\beta)$ be monic, and form its set kernel pair $K$ with projections $k_0,k_1$. For each $(a_0,a_1)\in K$, weak-pullback preservation supplies an element of $FK$ projecting to $\alpha(a_0),\alpha(a_1)$. Choice gives a coalgebra structure on $K$ making both projections morphisms. Monicity forces $k_0=k_1$, so $f$ is injective. Finally, the inverse of a bijective coalgebra morphism satisfies the coalgebra equation by cancellation; hence $U$ reflects isomorphisms.
+\end{proof}
+
+\begin{lemma}\label{lem:coalgebra-images-limits}
+The functor $U$ creates small colimits. Every coalgebra morphism factors as an underlying surjection followed by an underlying injection, with the intermediate coalgebra carried by its set-theoretic image. Arbitrary unions of subcoalgebras are computed on underlying sets. The category $\mathcal A$ has equalizers and pullbacks.
+\end{lemma}
+\begin{proof}
+For a diagram of coalgebras $(A_i,\alpha_i)$ and a set colimit with cocone $c_i:UA_i\to C$, the maps $Fc_i\alpha_i$ induce a unique structure map $\gamma:C\to FC$. The colimit property verifies the universal property for coalgebra cocones. In particular, the initial coalgebra has empty carrier, and coproducts have disjoint-union carriers.
+
+Factor the underlying function of $f:(A,\alpha)\to(B,\beta)$ as $A\xrightarrow{q}I\xrightarrow{i}B$, with $q$ surjective and $i$ injective. For $y=q(a)$, set $\gamma(y)=Fq(\alpha(a))$. This is independent of $a$: applying the injective map $Fi$ gives $\beta(i(y))$. It follows that $q$ and $i$ are coalgebra morphisms. The image of the map $\coprod_i A_i\to X$ associated with a family of subcoalgebras is therefore their set-theoretic union, equipped with its induced coalgebra structure.
+
+For $f,g:A\to B$, take the union $E$ of all subcoalgebras of $A$ contained in the set equalizer of $Uf,Ug$. This is a set-indexed union because an inclusion admits at most one coalgebra structure. Every coalgebra morphism $h:C\to A$ with $fh=gh$ has image contained in $E$. Its factorization through $E$ is a coalgebra morphism by cancellation under $F$ of the inclusion $E\hookrightarrow A$. This gives the equalizer. Binary products and equalizers give pullbacks.
+\end{proof}
+
+\begin{lemma}\label{lem:coalgebra-surjections}
+For every pullback $P=A\times_C B$ in $\mathcal A$, the comparison
+$UP\to UA\times_{UC}UB$ is surjective. Epimorphisms, regular epimorphisms, and underlying surjections in $\mathcal A$ coincide. They are stable under pullback and under binary products.
+\end{lemma}
+\begin{proof}
+Let $R=UA\times_{UC}UB$. As in the kernel-pair construction of Lemma~\ref{lem:coalgebra-monos}, weak-pullback preservation and choice give a coalgebra structure on $R$ making its projections coalgebra morphisms. The universal property of $P$ gives a coalgebra map $R\to P$. Its underlying map is a section of the comparison $UP\to R$, proving surjectivity. Consequently a pullback of an underlying surjection is an underlying surjection.
+
+Let $q:A\to B$ be an underlying surjection. If $h:A\to D$ equalizes its categorical kernel pair, surjectivity of the comparison onto the set kernel pair makes $Uh$ constant on the fibers of $Uq$. There is a unique set map $k:UB\to UD$ with $kq=h$. Writing $\alpha,\beta,\delta$ for the structure maps, the equations
+$\delta kq=\delta h=Fh\alpha=Fk\,\beta q$ imply $\delta k=Fk\,\beta$ by surjectivity of $q$. Thus $q$ is the coequalizer of its kernel pair.
+
+Conversely, if a coalgebra morphism is not surjective, the two maps from its codomain into its pushout along itself are distinct: the underlying pushout leaves the two copies of every element outside its image distinct. Hence that morphism is not epic. This proves the three characterizations and pullback stability. A product of two surjections is a composite of two pullbacks of those surjections, so it is surjective.
+\end{proof}
+
+\begin{proposition}\label{prop:coalgebra-distribution}
+Coproducts in $\mathcal A$ are disjoint and universal. For every set-indexed family $(Y_i)_{i\in I}$, the canonical map
+$\coprod_i(X\times Y_i)\to X\times\coprod_iY_i$ is an isomorphism.
+\end{proposition}
+\begin{proof}
+Coproduct injections are underlying injections. Their pullbacks are created by $U$, so distinct injections have empty pullback. For $f:Z\to\coprod_iY_i$, the inverse images $Z_i=f^{-1}(Y_i)$ are subcoalgebras whose underlying sets partition $UZ$. The canonical map $\coprod_iZ_i\to Z$ is therefore bijective and hence an isomorphism. This proves universality. Apply it to the projection $X\times\coprod_iY_i\to\coprod_iY_i$. The pullback of the $i$th injection is $X\times Y_i$, by the product universal property, giving the asserted distributivity isomorphism.
+\end{proof}
+
+Write $\mathcal P=\operatorname{Par}(\mathcal A,\operatorname{Mono})$. The original notation $\mathbf{Set}_F$ and $\mathbf{Pfn}_F$ denotes $\mathcal A$ and $\mathcal P$, respectively. A partial arrow $f:X\rightharpoonup Y$ is an isomorphism class of spans
+$[m,h]=(X\xleftarrow{m}D\xrightarrow{h}Y)$ with $m$ monic; composition uses pullbacks. Its domain is $\dom f=[m,m]$. The underlying span is an ordinary partial function. Since $U$ creates mono-pullbacks and subcoalgebra structures on subsets are unique, this defines a faithful functor $\mathcal P\to\mathbf{Pfn}$. The total arrows are precisely those represented by $[1_X,h]$: if $\dom[m,h]=1_X$, then $m$ has full underlying image and is therefore an isomorphism.
+
+\begin{proposition}\label{prop:coalgebra-partial-structure}
+The category $\mathcal P$ is a prodominical $P$-category with arbitrary coproducts, and its near product distributes over these coproducts.
+\end{proposition}
+\begin{proof}
+Define the near product by
+$[m,h]\boxtimes[n,k]=[m\times n,h\times k]$.
+Products preserve pullback squares, so this definition respects composition and representatives. The total product projections and diagonals supply the $P$-category structure. More explicitly, pullback calculation gives
+$\dom(f\boxtimes g)=\dom f\boxtimes\dom g$ and
+$p_0(f\boxtimes g)=fp_0(1\boxtimes\dom g)$, with the corresponding formula for $p_1$. Thus projections have the required half-naturality. Naturality of the diagonal follows because the pullback of $m\times m$ along a diagonal is represented by $m$ and the diagonal on its source. The product associator and transposition are natural for partial arrows because their naturality squares identify the domain subobjects as well as the right legs. The remaining structural identities are those of the total products.
+
+The empty-domain spans give zero arrows. The product of the empty coalgebra with any coalgebra is empty, since it has a projection to the empty carrier; consequently near products preserve zeros. This gives the prodominical structure.
+
+For a family $f_i=[m_i,h_i]:X_i\rightharpoonup Y$, its copairing is represented by
+$[\coprod_i m_i,[h_i]]$.
+Universality of coproducts shows that every domain subobject of $\coprod_iX_i$ decomposes into its inverse images in the summands; hence this copairing is unique. Finally, Proposition~\ref{prop:coalgebra-distribution} identifies the domains
+$D\times\coprod_iD_i\cong\coprod_i(D\times D_i)$ occurring in the distributivity equation for partial arrows. Naturality on the right legs follows from total distributivity. This proves distributivity in $\mathcal P$.
+\end{proof}
+
+\begin{proposition}\label{prop:coalgebra-ranges-unions}
+The category $\mathcal P$ has ranges, and
+$\ran(f\boxtimes g)=\ran f\boxtimes\ran g$.
+Its domain lattices have arbitrary unions, which are stable under near products and have the arrow-determination property. Finite meets correspond to intersections of subcoalgebras, and arbitrary joins correspond to their unions. In particular, $\mathcal P$ is an $rP\Sigma$-category.
+\end{proposition}
+\begin{proof}
+For $f=[m,h]:X\rightharpoonup Y$, let $i:I\hookrightarrow Y$ be the image of $h$. The partial identity $[i,i]$ receives $f$. If parallel partial arrows agree after composition with $f$, their underlying partial functions agree on every element of $I$. Faithfulness of the underlying partial-function functor therefore shows that they agree after composition with $[i,i]$. Thus $\ran f=[i,i]$.
+
+If $h=iq$ and $k=jr$ are the image factorizations of two right legs, then $h\times k=(i\times j)(q\times r)$. The first factor is monic and the second is surjective by Lemma~\ref{lem:coalgebra-surjections}. This proves the range-product identity.
+
+Domains correspond to subcoalgebras by $D\hookrightarrow X\mapsto[D\hookrightarrow X,D\hookrightarrow X]$. Mono-pullbacks give finite intersections, and Lemma~\ref{lem:coalgebra-images-limits} gives unions. Agreement of partial functions on each member of a family implies agreement on its union, so these unions have the required arrow-determination property. The domain lattice is distributive because finite intersections distribute over unions of underlying subsets.
+
+Let $A_i\hookrightarrow X$ be subcoalgebras and let $A=\bigcup_iA_i$. The map $\coprod_iA_i\to A$ is surjective. Its product with $Y$ is surjective, while distributivity identifies its source with $\coprod_i(Y\times A_i)$. Taking images in $Y\times X$ gives
+$Y\times A=\bigcup_i(Y\times A_i)$.
+Hence unions are stable under products with identity domains. For any domain $D\hookrightarrow Y$, the same argument with $D$ in place of $Y$, followed by its product inclusion into $Y\times X$, proves stability under arbitrary near-product domains.
+\end{proof}
+
+\begin{proposition}\label{prop:coalgebra-weak-choice}
+Every partial monomorphism in $\mathcal P$ has a section.
+\end{proposition}
+\begin{proof}
+Let $f=[m,h]:X\rightharpoonup Y$ be a partial monomorphism. If total arrows $r,s:Z\to D$ satisfy $hr=hs$, then $fmr=fms$. Partial monicity gives $(\dom f)mr=(\dom f)ms$, namely $mr=ms$, and monicity of $m$ gives $r=s$. Thus $h$ is monic. The reversed span $\sigma=[h,m]:Y\rightharpoonup X$ satisfies
+$f\sigma=\dom\sigma$ and $\sigma f=\dom f$, by the self-pullback properties of $m$ and $h$. In particular, $f\sigma f=f$, so $\sigma$ is a section in Heller's sense.
+\end{proof}
+
+These propositions give ranges and weak choice. They also give distributive coproducts and domain lattices, with countable unions stable under near products. Countable distributivity also constructs the formally free semigroup $X^\#=\coprod_{n\geq1}X^n$. Its structure maps are defined on word-length summands, and those summands form a stably epimorphic family. Thus $\mathcal P$ has Heller's iteration-category structure. The separate finite-stage gluing argument identifies its iteration operator with ordinary iteration of the underlying partial functions.
+
+\section{Coalgebra topology and iteration}\label{sec:coalgebra-iteration}
+The standing hypotheses remain those of Section~\ref{sec:coalgebra-structure}, except where a counterexample or a different hypothesis is stated explicitly. The \emph{coalgebra topology} on $X$ has the subcoalgebras of $X$ as its open sets. Under the standing hypotheses, Lemma~\ref{lem:coalgebra-images-limits} and pullbacks of inclusions show that these subsets are closed under arbitrary unions and finite intersections. A set endofunctor is called \emph{nontrivial} if $FX=\varnothing$ implies $X=\varnothing$.
+
+\subsection{The largest subcoalgebra contained in a subset}
+In original Section 5.2, p.~31, the displayed description of $[S]$ has the inclusion reversed. Define $[S]$ to be the union of all subcoalgebras whose underlying sets are contained in $S$. Then the meet formula is $\bigwedge_i A_i=[\bigcap_i UA_i]$. A union of subcoalgebras containing $S$ would instead include the whole coalgebra $X$ and would not give the asserted meet.
+
+\subsection{Continuity of coalgebra morphisms}
+Nontriviality of the set functor alone does not make every coalgebra morphism continuous for the subcoalgebra topologies. The following example disproves the last sentence of original Section 5.2, p.~31.
+
+Define $F(A)=\{*\}\sqcup\{(a,b)\in A^2:a\ne b\}$. For a function $t:A\to B$, send $*$ to $*$ and send $(a,b)$ to $(t(a),t(b))$ when these coordinates differ, and to $*$ otherwise. Identity and composition hold: once a pair is collapsed, every subsequent image remains collapsed. The functor is nontrivial in this sense, since $F(A)$ is never empty.
+
+Let $A=\{a,b,c\}$ have structure $a\mapsto(b,c)$, $b\mapsto*$, $c\mapsto*$. Let $B=\{y,z\}$ have constant structure $*$. The function $t(a)=y$, $t(b)=t(c)=z$ is a coalgebra morphism. The subset $\{y\}$ is a subcoalgebra of $B$, but its inverse image $\{a\}$ is not a subcoalgebra of $A$, because $F(\{a\}\hookrightarrow A)$ has image $\{*\}$ and cannot contain $(b,c)$. Thus $t$ is not continuous for the indicated topologies.
+
+If $F$ weakly preserves pullbacks along injections, inverse images of subcoalgebras are subcoalgebras, so coalgebra morphisms are continuous. To see the sufficiency directly, form the set-theoretic inverse image of an injective coalgebra morphism. Its square is a pullback with an injective leg. Its image under $F$ is a weak pullback; the map of $F$ applied to the injective leg is injective under this hypothesis, so the required structure map is unique, and the pullback projections are coalgebra morphisms. Original Section 5.3 states an inverse-image criterion, but its converse requires the nonempty-pullback qualification explained in Section~\ref{sec:inverse-image-exception}.
+
+\subsection{Gluing coalgebra morphisms}
+We prove original Proposition 33 (p.~32). Let $U_i$ be subcoalgebras of a fixed coalgebra $X$, put $U=\bigcup_i U_i$, and let $f_i:U_i\to Y$ be coalgebra morphisms agreeing on every intersection $U_i\cap U_j$. Glue the underlying functions to $f:U\to Y$. If $j_i:U_i\to U$ are the inclusions and $\xi_U,\xi_i,\xi_Y$ are the structure maps, then
+\[
+\xi_Y f j_i=\xi_Y f_i=F(f_i)\xi_i
+ =F(f)F(j_i)\xi_i=F(f)\xi_Uj_i.
+\]
+The inclusions are jointly surjective, so $\xi_Yf=F(f)\xi_U$. Uniqueness follows from uniqueness of the underlying glued function. Thus $V\mapsto\operatorname{Coalg}(F)(V,Y)$ satisfies the sheaf gluing condition on the coalgebra topology of $X$.
+
+\subsection{Iteration and the forgetful functor}
+Let $f:X\to X$ be a total coalgebra morphism and let $V\subseteq X$ be a subcoalgebra on which $f$ is the identity. Put $A_n=f^{-n}(V)$ for $n\geq0$. These are subcoalgebras by weak-pullback preservation, and $A_n\subseteq A_{n+1}$. The restrictions $f^n|_{A_n}$ agree on overlaps: if $m\leq n$ and $x\in A_m$, then $f^nx=f^{n-m}(f^mx)=f^mx$. The gluing argument therefore constructs the iteration map with domain exactly $\bigcup_n A_n$. Its underlying partial function is the ordinary set-theoretic iteration map. Thus the forgetful functor preserves iteration, as asserted in original Proposition 47.
+
+For a second total coalgebra morphism $g:Y\to Y$ fixing a subcoalgebra $W\subseteq Y$, put $B_m=g^{-m}(W)$. Product stability of domain unions gives
+\[
+\left(\bigcup_n A_n\right)\times\left(\bigcup_m B_m\right)
+ =\bigcup_{n,m}(A_n\times B_m)
+ =\bigcup_k(A_k\times B_k).
+\]
+The last equality uses increasingness and $k=\max(n,m)$. On $A_n\times B_m$, choose $k\geq n,m$. Both partial maps agree with $f^k\times g^k$ there, since both transitions fix their halting subcoalgebras. Arrow determination gives equality on their full domains. The coproduct identity follows by taking the same construction separately on its two summands. Thus the coalgebra iteration operator has all the properties required in Section 1.
+
+\subsection{Colimits of partial coalgebra maps}
+We prove the cocompleteness assertion following original Proposition 34 (p.~35). Assume the standing hypotheses on $F$: it weakly preserves pullbacks, and partial maps have subcoalgebras as their domains. Inverse images and images of subcoalgebras are then subcoalgebras, and the forgetful functor $\mathcal A\to\mathbf{Set}$ creates colimits.
+
+\begin{proposition}\label{prop:partial-coalgebra-colimits}
+The category $\mathcal P$ has all small colimits.
+\end{proposition}
+\begin{proof}
+Arbitrary coproducts exist. A family of partial maps $f_i:X_i\rightharpoonup Y$, with domains $D_i\subseteq X_i$, determines the partial map from $\coprod_iX_i$ with domain $\coprod_iD_i$ and value map induced by the maps $f_i|_{D_i}$. Conversely, restriction along the coproduct injections recovers that family. The empty coalgebra is initial in the partial-map category.
+
+It remains to construct coequalizers. Let $f,g:X\rightharpoonup Y$ be parallel partial maps. For a subcoalgebra $K\subseteq Y$, write $f^{-1}K$ for $\{x\in\dom f:f(x)\in K\}$, and similarly for $g$. Let $U$ be the union of all subcoalgebras $K\subseteq Y$ satisfying $f^{-1}K=g^{-1}K$. Inverse images commute with unions, so $f^{-1}U=g^{-1}U$; denote this subcoalgebra of $X$ by $V$. Form the coequalizer $q_0:U\to Q$ in $\mathcal A$ of the total restrictions $f|_V,g|_V:V\to U$. Its underlying function is the quotient by the equivalence relation generated by the pairs $(f(v),g(v))$, for $v\in V$. Define $q:Y\rightharpoonup Q$ to have domain $U$ and value map $q_0$. Then $qf=qg$.
+
+Suppose $k:Y\rightharpoonup Z$ satisfies $kf=kg$, and put $K=\dom k$. Equality of the domains of these composites gives $f^{-1}K=g^{-1}K$, so $K\subseteq U$. For every $v\in V$, membership of $f(v)$ in $K$ is equivalent to membership of $g(v)$ in $K$. Thus $K$ is a union of equivalence classes of the relation defining $q_0$. Moreover, when that pair belongs to $K$, the equation $kf=kg$ gives $k(f(v))=k(g(v))$. It follows that $k|_K$ is constant on each of those equivalence classes.
+
+The image $J=q_0[K]$ is a subcoalgebra of $Q$, and $q_0^{-1}J=K$. The map $k|_K$ therefore descends to a unique set map $\ell_0:J\to Z$. This map is a coalgebra morphism: its coalgebra-morphism equation follows after precomposition with the surjective coalgebra morphism $q_0|_K:K\to J$, and hence follows by cancellation. The partial map $\ell:Q\rightharpoonup Z$ with domain $J$ and value map $\ell_0$ satisfies $\ell q=k$.
+
+If another partial map $\ell':Q\rightharpoonup Z$, with domain $J'$, satisfies $\ell'q=k$, equality of domains gives $q_0^{-1}J'=K$. Surjectivity of $q_0$ then gives $J'=q_0[K]=J$, and the equation on values forces $\ell'|_J=\ell_0$. Thus $q$ is a coequalizer. Coproducts and coequalizers give all small colimits.
+\end{proof}
+
+\subsection{Weak totality and dense domains}
+An arrow $f:X\rightharpoonup Y$ is \emph{weakly total} if $f\varphi=0$ implies $\varphi=0$ for every incoming partial arrow $\varphi:Z\rightharpoonup X$. The corrected statement preceding original Proposition 38 (p.~36) is the following.
+
+\begin{proposition}\label{prop:weak-total-dense}
+Assume that $F$ weakly preserves pullbacks. Let $f:X\rightharpoonup Y$ be a partial coalgebra map with domain $D\subseteq X$. Then $f$ is weakly total if and only if $D$ is dense in the coalgebra topology of $X$. Consequently, every weakly total arrow with source $X$ is total if and only if $X$ has no proper dense open subcoalgebra.
+\end{proposition}
+\begin{proof}
+Suppose first that $D$ is dense and that $\varphi:W\rightharpoonup X$ is nonzero. Its domain is nonempty, so its image is a nonempty subcoalgebra of $X$. This image meets $D$, and therefore $f\varphi$ has nonempty domain. Hence $f$ is weakly total.
+
+If $D$ is not dense, there is a nonempty open subcoalgebra $E\subseteq X$ disjoint from $D$. Its total inclusion $i:E\to X$ is nonzero and satisfies $fi=0$, so $f$ is not weakly total. This proves the first assertion. For the second, use the first assertion and the fact that $f$ is total exactly when $D=X$. Conversely, a proper dense open subcoalgebra $D$ is the domain of a weakly total, nontotal partial identity $X\rightharpoonup X$.
+\end{proof}
+
+Original Proposition 38 remains valid. For the identity-functor coalgebra on $X=\{x,y\}$ with structure $x\mapsto y$, $y\mapsto y$, the subcoalgebra $\{y\}$ is proper and dense. Its partial identity is weakly total and nontotal. The total identity of the same $X$ also shows why the original equivalence cannot be stated for an individual weakly total map.
+
+\subsection{Nonempty powers}
+For original Proposition 39 (p.~37), suppose that a nonempty coalgebra $A$ has a positive finite power $A^n$. The product universal property gives the total diagonal $\Delta_n:A\to A^n$. Its underlying function has nonempty source, so the underlying set of $A^n$ is nonempty.
+
+\subsection{Generalized weak pullbacks and connected domains}
+A generalized pullback is the limit of a set-indexed nonempty family of maps with a common codomain. The functor $F$ weakly preserves these pullbacks if its comparison map to the corresponding limit of the image family is surjective.
+
+\begin{proposition}\label{prop:generated-coalgebra-connected}
+Let $F:\mathbf{Set}\to\mathbf{Set}$ weakly preserve generalized pullbacks, and let $\mathcal P$ be its category of partial coalgebra maps with subcoalgebra domains. Then $\mathcal P$ is separated.
+\end{proposition}
+\begin{proof}
+Fix a coalgebra $X$ and an element $x\in X$. Let $C_x$ be the set-theoretic intersection of all subcoalgebras of $X$ containing $x$. This is a nonempty intersection indexed by a set. Apply weak preservation of the generalized pullback of their inclusions into $X$. For each $z\in C_x$, the structure maps of those subcoalgebras provide a compatible family of elements, and weak preservation supplies an element of $F(C_x)$ mapping to that family. This element is unique because the inclusion $C_x\hookrightarrow X$ is a nonempty injection, hence split in $\mathbf{Set}$, and its image under $F$ is injective. These elements define a coalgebra structure on $C_x$ for which its inclusion into $X$ is a coalgebra morphism. Thus $C_x$ is the smallest subcoalgebra containing $x$.
+
+Suppose $C_x=D_0\cup D_1$ is a disjoint union of subcoalgebras. One of the $D_i$ contains $x$, so minimality gives $C_x\subseteq D_i$. The other summand is empty. Under the identification of subcoalgebras with domains, $C_x$ is therefore connected.
+
+Let $f,g:X\rightharpoonup Y$ agree after restriction to every connected domain. If $x\in\dom f$, then $C_x\subseteq\dom f$ by minimality. Equality of the restrictions to $C_x$ implies $C_x\subseteq\dom g$ and $f(x)=g(x)$. Interchanging $f$ and $g$ proves equality of domains and values. Hence $f=g$, as required.
+\end{proof}
+
+\subsection{An ambient terminal coalgebra in the construction of the isotype}
+The free-monoid construction at the end of original Section 5.8 (p.~40) uses a terminal coalgebra $T$ through the term $Y^0=T$. Here $T$ is terminal in the ambient category $\mathcal A=\operatorname{Coalg}(F)$ of total coalgebra maps.
+
+\begin{proposition}\label{prop:coalgebra-isotype}
+Suppose $F$ is nontrivial and weakly preserves pullbacks, and the ambient category $\mathcal A=\operatorname{Coalg}(F)$ has binary products and a terminal object $T$. For any coalgebra $X$, put
+\[
+Y=\coprod_{n\in\mathbb N}X,\qquad
+Z=\coprod_{n\geq0}Y^n\quad(Y^0=T),\qquad
+W=Z^\#=\coprod_{n\geq1}Z^n.
+\]
+Then $W$ is nonempty and admits isomorphisms $W\cong W+W$, $W\cong W\times W$, and $W\cong W^\#$.
+\end{proposition}
+\begin{proof}
+Products distribute over the coproducts under the standing weak-pullback hypotheses. Reindexing gives $Y+Y\cong Y$, and hence $m\cdot Y^n\cong Y^n$ for every positive finite $m,n$, where $m\cdot A$ denotes the coproduct of $m$ copies of $A$. Consequently,
+\[
+Z\times Z\cong T+\coprod_{n\geq1}(n+1)\cdot Y^n
+\cong T+\coprod_{n\geq1}Y^n=Z.
+\]
+Thus $Z^n\cong Z$ for every positive $n$, and $W\cong\coprod_{\mathbb N}Z$. Reindexing the resulting countable coproducts proves $W+W\cong W$ and $W\times W\cong W$. The latter gives $W^n\cong W$ for positive $n$, so $W^\#\cong\coprod_{\mathbb N}W\cong W$.
+
+Nontriviality makes $F(\{*\})$ nonempty, so a singleton coalgebra exists. Its morphism to $T$ shows that $T$ is nonempty. The ambient injections $T\to Z\to W$ then show that $W$ is nonempty.
+\end{proof}
+
+Choose a frame at $W$ and form an isotypical $B^\#$-subcategory $\B\langle W\rangle$ using the positive-arity object operations. Every object of this subcategory is isomorphic to $W$. Since $W$ is nonempty, the two coproduct injections $W\to W+W$, followed by an isomorphism $W+W\to W$, give distinct total endomorphisms of $W$. Hence $T\not\cong W$.
+
+If all countable products exist and a nonempty coalgebra $X$ is fixed, there is a second construction. Put $Z=X^{\mathbb N}$ and $W=\coprod_{\mathbb N}Z$. Reindexing the countable product gives $Z^n\cong Z$ for every positive finite $n$, and the same coproduct calculations give the three isotype isomorphisms. The diagonal $X\to X^{\mathbb N}$ proves nonemptiness.
+
+\section{The coalgebra existence theorem and an explicit example}\label{sec:coalgebraexistence}
+\begin{theorem}\label{thm:coalgebra}
+Work in ZFC. Let $F:\mathbf{Set}\to\mathbf{Set}$ weakly preserve pullbacks, and suppose that $\operatorname{Coalg}(F)$ has binary products. Then its category of partial maps with subcoalgebra domains is a relatively separated iteration category. Every uniformly generated isotypical $B^\#$-subcategory $\B$ of its total maps has a recursion-category completion $\Tur(\B)$.
+\end{theorem}
+\begin{proof}
+The structural results above give the prodominical $P\Sigma$-structure, ranges, distributive domain lattices, and product-stable unions. The gluing construction supplies the iteration operator and its product and coproduct identities. The forgetful functor to partial functions is faithful, preserves zero arrows, coproducts, domains, and this iteration, and has a separated target: singletons detect equality of partial functions. Theorem~\ref{thm:main} now applies.
+\end{proof}
+
+A functor is \emph{bounded} if there is a cardinal $\kappa$ such that each element of each coalgebra belongs to a subcoalgebra of cardinality at most $\kappa$. For bounded functors, the cofree-coalgebra construction supplies binary products and a terminal coalgebra \cite{GS}. Given an isotype $W$, a chosen frame $b$, and a finite family $H$ of total endomorphisms, form $\B=B^\#(b\cup H)$. A finite copairing, recoded through the frame, catalogues $H$; adjoining $1_W$ if $H$ is empty supplies a nonempty index coproduct. This $\B$ is uniformly generated; Appendix~\ref{sec:catalogue} then supplies the strengthened catalogue.
+
+For an explicit example, put
+\[
+F(A)=2\times A,\qquad X_k=\mathbb N^k\times2\quad(k\geq1),\qquad
+\xi_k(\mathbf n,b)=(b,(\mathbf n,1-b)).
+\]
+A subcoalgebra of $X_k$ is exactly $D\times2$ for a subset $D\subseteq\mathbb N^k$: closure under the transition forces both phases of each state. A partial coalgebra map $X_k\rightharpoonup X_l$ is therefore exactly a lift
+\[
+\widehat f(\mathbf n,b)=(f(\mathbf n),b)
+\]
+of a partial function $f:\mathbb N^k\rightharpoonup\mathbb N^l$. Preservation of output fixes the second coordinate; preservation of the transition makes the first coordinate independent of the phase.
+
+Retain the lifts of partial recursive functions as arrows. Then
+$\widehat g\,\widehat f=\widehat{gf}$ and
+$\dom\widehat f=\widehat{\dom f}$. The categorical product of $X_k$ and $X_l$ is $X_{k+l}$, with the two projections sharing the phase $b$. To check its universal property in the entire coalgebra category, two maps into $X_k,X_l$ must give the same phase at every source state, since both preserve its output; pairing their numerical coordinates gives the unique coalgebra map to $X_{k+l}$.
+
+Computable pairing bijections identify all the $X_k$. Computable encodings of tagged unions give coproducts, and encodings of nonempty finite lists give the $B^\#$-structure. Lifting a standard universal partial recursive function $U(e,n)$ gives
+\[
+\widehat U:X_1\times X_1\rightharpoonup X_1,
+\qquad ((e,n),b)\longmapsto(U(e,n),b).
+\]
+For any partial recursive $\psi(\mathbf v,n)$, the parameter theorem gives a total recursive index function $j(\mathbf v)$ with $U(j(\mathbf v),n)=\psi(\mathbf v,n)$ as partial functions. Its lift proves the Turing-morphism property. Thus these partial coalgebra maps form a recursion category, equivalent through $f\mapsto\widehat f$ to the usual category on positive finite powers of $\mathbb N$ and partial recursive functions.
+
+\section{Further corrections}\label{sec:other-corrections}
+
+\subsection{Formal objects, catalogues, and frames}
+After original Proposition 2 (p.~7), define $\C\langle X\rangle$ using the tagged hom-sets $\C(EA,EB)$, where $E$ evaluates formal object expressions at $X$. This is a full restriction with formal object tags. It must not be identified with the generally smaller structurally generated subcategory $B^\#(1_X)$. For example, in the full category on formal positive expressions over $\mathbb N$, a structural map $X\to X$ extends to a natural endomorphism of the identity functor on sets and is therefore the identity. The full hom-set contains every function $\mathbb N\to\mathbb N$.
+
+Original Lemma 3(i) (pp.~8--9) requires $X\in\operatorname{Ob}\B$; part (ii) requires $X,W,W'\in\operatorname{Ob}\B$. Otherwise the indices used in the displayed list identities need not exist. In part (ii), take $\C=\mathbf{Pfn}$, $\B$ the finite sets and partial maps, $X=W=1$, and $W'=\mathbb N$. Let $t:1\times1\to1$ and $t':\mathbb N\times1\to1$ be the unique total maps. The catalogue $t$ lists $1_1$, but their combined catalogue has index object $1+\mathbb N$, outside $\B$, and has no $\B$-indices. Original Proposition 6(iii) (p.~10) requires a nonempty family when the generated union is asserted to contain its fixed frame and catalogue. Original Lemma 7 (p.~11) must explicitly require its catalogue to belong to $\B$.
+
+For a \emph{fixed} frame $b$, a set $W$ generates the transported algebra $\C_b$ if and only if $b\cup W$ generates $\C$ as a $B^\#$-category. Heller's Proposition 3.2~\cite{H} asserts further that a fixed $W$ works for every frame if it works for one. Lengyel's ``some (any)'' restatement on original p.~12 should be replaced by the fixed-frame formulation.
+
+For a counterexample to frame independence, choose a recursive bijection $\pi:\mathbb N\to\mathbb N^2$, a nonrecursive permutation $a$ of $\mathbb N$, and the recursive even/odd coproduct bijection $b_+:\mathbb N\to\mathbb N+\mathbb N$. Choose a recursive bijection $c:\mathbb N\to\mathbb N^\#$ such that $c(2n)$ is the length-two word $\pi(n)$ and odd inputs enumerate all other nonempty words. Let $b=(\pi a,b_+,c)$, including inverse arrows, and let $\C=B^\#(b)$ on formal object expressions. Put $e_0=b_+^{-1}i_0$. Define $\mathrm{first}=[1_{\mathbb N},p_0]l_{\mathbb N}$ and $\mathrm{second}=[1_{\mathbb N},\mathrm{first}\,p_1]l_{\mathbb N}$, both from $\mathbb N^\#$ to $\mathbb N$. They give
+\[
+\pi=\langle\mathrm{first},\mathrm{second}\rangle c e_0,
+\qquad
+\pi^{-1}=\nabla b_+c^{-1}m(j\times j).
+\]
+Thus the recursive frame $b'=(\pi,b_+,c)$ also belongs to $\C$. Every arrow of $B^\#(b')$ is recursive under the fixed encodings, whereas $\pi a$ is not. Hence $B^\#(b')\ne\C=B^\#(b)$. Taking $W=\varnothing$ disproves fixed-set frame independence. Original Proposition 5 (p.~10) remains valid: it changes the catalogue when changing the frame. Its displayed comparison set must contain both $b_\times^{-1}b'_\times$ and $(b'_\times)^{-1}b_\times$; the original prints the first comparison twice.
+
+The finite set printed in original Lemma 8 (p.~12) omits $\mathrm{wd}^{-1}$, although its proof conjugates by word decomposition. Heller's corresponding list on p.~1257 explicitly contains this inverse. Replace the printed finite set by the explicit enlarged set in Appendix~\ref{sec:catalogue}; Lemma~\ref{lem:finitegeneration} proves the resulting equality.
+
+\subsection{The corrected general union calculus}\label{sec:direct-images}
+For original Proposition 13(i) (p.~16) and the connectedness clauses of Propositions 20 (pp.~18--19) and 31 (pp.~29--30), use the explicit binary-stability hypothesis and proof in Section~\ref{sec:stable-unions}.
+
+In the countable-coproduct assertion on original p.~14, restore product compatibility of ranges: assume an $rP\Sigma$-category. For domains $e_n$ on $X$ put $q=[e_n]_{n\in\mathbb N}:\coprod_nX\to X$. Then $d=\ran q$ is their arrow-determining union: agreement on every $e_n$ is agreement on $q$, hence on $d$. For any domain $a$ on $Y$, product compatibility and distributivity give
+\[
+a\boxtimes d=\ran(a\boxtimes q)
+=\ran[\,a\boxtimes e_n\,]_{n\in\mathbb N}
+=\bigcup_n(a\boxtimes e_n).
+\]
+The middle equality uses the distributivity isomorphism on the source. This proves the corrected countable-coproduct assertion.
+
+For the general stability sentence after original Lemma 11 (p.~15), require \eqref{eq:stable-unions} as an additional axiom wherever arbitrary countable product-stability is used. Proposition~\ref{prop:coalgebra-ranges-unions} proves the stronger condition for partial coalgebra maps.
+
+\subsection{Relative separation}
+After the definition on original p.~27, retain the implication: if $L:\C\to\D$ is faithful and $\D$ is separated, connected domains on the objects $LX$ detect equality of $\C$-arrows. The unrestricted converse is false: testing arrows in the image does not imply separation of every object of $\D$.
+
+For a counterexample, let $K$ be Cantor space, let $\mathcal E=\operatorname{Par}(\operatorname{Sh}(K))$ with all monomorphisms as domains, and put $\D=\mathbf{Pfn}\times\mathcal E$. Stable images and unions in the sheaf topos, with gluing of compatible iterates, give the required iteration structure. Every nonempty open of $K$ has a nontrivial disjoint open decomposition. Thus the terminal sheaf has no nonzero connected domain, and its identity and zero partial maps are not distinguished by connected tests. Consequently $\D$ is not separated. Nevertheless $L(X)=(X,0)$, where $0$ is the initial sheaf, defines a faithful iteration functor from $\mathbf{Pfn}$; singleton domains on these image objects detect both values and definedness. This satisfies the printed testing condition.
+
+\subsection{An empty-set exception in the inverse-image criterion}\label{sec:inverse-image-exception}
+Original Section 5.3 (p.~32) omits the word ``nonempty'' from the criterion in Gumm--Schr\"oder's Theorem 5.7(i) \cite{GSW}: closure of subcoalgebras under inverse images characterizes weak preservation of \emph{nonempty} pullbacks along injections. The unrestricted converse printed by Lengyel is false.
+
+Define $F\varnothing=\{0,1\}$ and $FX=1$ for every nonempty set $X$. On maps, take the forced maps, with $F1_{\varnothing}=1_{\{0,1\}}$. This is a nontrivial set functor in this sense. Its coalgebra category is isomorphic to $\mathbf{Set}$: every set has a unique structure, and every function is a morphism. All inverse images are therefore subcoalgebras. But the pullback of the two maps $\varnothing\to1$ has empty apex. After applying $F$, its comparison with $2\times_1 2$ is the diagonal $2\to2\times2$, which is not surjective. The square is not a weak pullback. Restoring ``nonempty'' corrects the cited equivalence.
+
+In original Section 5.2, ``one-cogenerated subcoalgebras need not exist'' should read ``one-generated subcoalgebras need not exist'': the largest subcoalgebra contained in any subset always exists by unions. The finite-intersection citation on p.~31 should refer to original reference [8], Theorem 3.1, rather than [7].
+
+\subsection{A criterion for a \texorpdfstring{$P$}{P}-category structure}
+Rosolini's Theorem 2.1.9 \cite{RT} gives the following criterion. The chosen diagonal is included in the cartesian structure on the wide subcategory; projection naturality is required in the variable retained by each projection.
+
+\begin{proposition}[Original Theorem 35]
+Let $\C$ have a bifunctor $\boxtimes$, a natural diagonal $\Delta$,
+and projections $p_0,p_1$ natural in their retained variables. These
+data define a $P$-category if and only if there is a wide subcategory
+$\B$, closed under $\boxtimes$, on which the specified product,
+projections, and diagonal give a binary cartesian-product structure,
+and whose derived associator and symmetry are natural for all arrows
+of $\C$.
+\end{proposition}
+\begin{proof}
+For necessity take $\B=\C_T$. The domain identities
+$\dom(gf)=\dom((\dom g)f)$ and
+$\dom(f\boxtimes g)=\dom f\boxtimes\dom g$ make this a wide
+subcategory closed under the near product and containing the
+projections and diagonal. If $f,g$ are total, their pairing is total
+and $p_0\langle f,g\rangle=f\dom g=f$, with the analogous equation
+for $p_1$. The reconstruction identity
+$h=\langle p_0h,p_1h\rangle$ proves uniqueness. Thus these data give
+binary products on $\C_T$.
+
+Conversely, the cartesian structure on $\B$ gives all structural
+projection and diagonal equations. If $\mathcal P$ is generated by
+the projections under composition and near product, then
+$\mathcal P\subseteq\B$. Retained-variable naturality in $\C$ and
+cartesian naturality in $\B$ give
+$p_0(f\boxtimes g)=f p_0$ for arbitrary $f$ and $g\in\mathcal P$;
+the corresponding equation for $p_1$ holds for
+$f\in\mathcal P$ and arbitrary $g$. These are the required
+naturalizer conditions. The associator and symmetry are natural by
+hypothesis, and their coherence equations hold in the wide cartesian
+subcategory, hence in $\C$. This proves the criterion.
+\end{proof}
+
+\subsection{Well-poweredness and the choice of subobjects}\label{sec:wellpoweredness}
+Original Section 5.1 (p.~30) calls the coalgebra category well-powered and then
+defines a subcoalgebra by an underlying subset. The appropriate explicit
+reading is \emph{well-powered with respect to underlying-injective
+subcoalgebras}. This property holds for every set endofunctor. Under the
+later weak-pullback hypothesis, these are all categorical subobjects, so
+ordinary well-poweredness follows as well. Some coalgebra sources use
+``wellpowered'' relative to the embeddings of a chosen factorization
+system~\cite{RK}.
+The distinction is substantive: the unrestricted assertion for all
+categorical monomorphisms is false.
+
+\begin{proposition}\label{prop:coalgebra-wellpoweredness}
+Work in ZFC. For every endofunctor $F:\mathbf{Set}\to\mathbf{Set}$,
+the underlying-injective subcoalgebras of any fixed coalgebra form a set
+up to isomorphism. If $F$ weakly preserves pullbacks, then
+$\operatorname{Coalg}(F)$ is well-powered in the ordinary categorical
+sense. There is, however, a nontrivial set endofunctor preserving
+injections whose coalgebra category is not well-powered in that sense.
+\end{proposition}
+\begin{proof}
+An underlying injection is isomorphic over its codomain to the inclusion
+of its image. Each subset admits at most one subcoalgebra structure:
+a nonempty inclusion splits in $\mathbf{Set}$, so its image under $F$
+is injective; the structure map on the empty subset is unique. This
+proves the first assertion. If $F$ weakly preserves pullbacks, give the
+set kernel pair of a monomorphism a coalgebra structure by choosing
+weak-pullback lifts. Both projections are coalgebra morphisms, so
+monicity makes them equal. Thus the monomorphism is injective, proving
+the second assertion.
+
+For the counterexample, let $\mathcal P$ be the covariant powerset
+functor and define
+\begin{align*}
+F(X)&=\{(U_0,U_1,U_2)\in\mathcal P(X)^3:
+ |\{U_0,U_1,U_2\}|\leq2\},\\
+F(f)(U_0,U_1,U_2)&=(f[U_0],f[U_1],f[U_2]).
+\end{align*}
+Direct image cannot increase the number of distinct components, so this
+is a functor. It preserves injections and is nontrivial, since the
+triple of empty subsets always belongs to $F(X)$.
+A nonconstant triple in $F(X)$ has exactly one equal coordinate pair,
+which we call its \emph{equality pattern}: $01$, $02$, or $12$.
+If its direct image is nonconstant, that image has the same pattern.
+Consequently, two nonconstant direct images of the same triple have
+the same pattern.
+
+Fix the singleton coalgebra
+$B=(\{*\},*\mapsto(\{*\},\{*\},\{*\}))$.
+For each ordinal $\lambda$, take
+$A_\lambda=\lambda\sqcup\{m,n\}$, with two new markers $m,n$.
+For $\xi<\lambda$ put $S_\xi=\{n\}\cup\{\eta:\eta<\xi\}$,
+and give $A_\lambda$ the structure
+\[
+\begin{aligned}
+\alpha_\lambda(\xi)&=(S_\xi,S_\xi,\{m\}) &&(\xi<\lambda),\\
+\alpha_\lambda(m)&=(\{m\},\{n\},\{m\}),\\
+\alpha_\lambda(n)&=(\{m\},\{n\},\{n\}).
+\end{aligned}
+\]
+The three kinds of state have patterns $01$, $02$, and $12$,
+respectively. Every component is nonempty, so the unique function
+$h_\lambda:A_\lambda\to\{*\}$ is a coalgebra morphism to $B$.
+
+We prove that $h_\lambda$ is monic. Let
+$u,v:(C,\chi)\to(A_\lambda,\alpha_\lambda)$ be coalgebra morphisms.
+For $c\in C$, write $\chi(c)=(T_0,T_1,T_2)$. Their equations are
+\begin{align*}
+(u[T_0],u[T_1],u[T_2])&=\alpha_\lambda(u(c)),\\
+(v[T_0],v[T_1],v[T_2])&=\alpha_\lambda(v(c)).
+\end{align*}
+Both images are nonconstant, so $u(c)$ and $v(c)$ have the same
+pattern. Since each marker has its own pattern, unequal values must
+both lie in the ordinal summand.
+
+If $u\ne v$, choose the least ordinal
+\[
+\mu\in\{\min(u(c),v(c)):c\in C,\ u(c)\ne v(c)\}.
+\]
+Choose $c$ realizing this minimum, and interchange $u,v$ if necessary
+so that $u(c)=\mu<\nu=v(c)$. The first component of the two
+coalgebra equations gives
+$u[T_0]=S_\mu$ and $v[T_0]=S_\nu$.
+Since $\mu\in S_\nu$, some $d\in T_0$ satisfies $v(d)=\mu$.
+We have $u(d)\in S_\mu$. Pattern preservation at $d$ excludes
+$u(d)=n$, because $v(d)$ lies in the ordinal summand. Hence
+$u(d)=\zeta<\mu=v(d)$, contrary to the minimality of $\mu$.
+Thus $u=v$, proving monicity of $h_\lambda$.
+
+Taking $\lambda$ through the infinite cardinals gives monomorphisms
+into the same $B$ with arbitrarily large carriers. A coalgebra
+isomorphism induces a bijection of carriers, so these subobjects cannot
+have a set of representatives. Thus $\operatorname{Coalg}(F)$ is not
+ordinarily well-powered.
+
+This $F$ fails weak-pullback preservation. In the set
+kernel pair of $h_0:A_0\to B$, the two elements
+$\alpha_0(m),\alpha_0(n)\in F(A_0)$ have the same image in $F(B)$.
+A weak-pullback lift would be a triple whose two direct images have
+patterns $02$ and $12$, contradicting the pattern observation.
+\end{proof}
+
+\subsection{Other local corrections}
+On original p.~4, the projection square for a fixed object $Z$ can commute even when $\phi$ is not total: in $\mathbf{Pfn}$, take $Z=\varnothing$. Replace ``does not commute unless $\phi$ is total'' by ``need not commute for a partial $\phi$; naturality for every $Z$ is equivalent to totality.'' For the converse, take $Z$ to be the source of $\phi$ and precompose with its diagonal. In equation (2), the transposition relates functors $\C^2\to\C$, not $\C^2\to\C^2$. On p.~6, the multiplication in the free-semigroup construction uses the near product, equivalently the product of total maps.
+
+In the opening of original Section 3.1, the weak Turing morphism is constructed in $\Tur(\B)$, not necessarily in $\B$. The index from original Lemma 23 has type $X\to X^\#$; the transport to $\alpha:X\times X\to X$ in Section 6 supplies the required weak-Turing index type. The finite induction in Section 4 includes $k=1$, and the iteration comparison includes immediate termination, omitted by the printed reduction to $n>1$ on p.~26. On p.~27, the running-state domain after the state-encoding prefix is $1_S+0_X$ on $S+X$, where $S=(X^\#\times X^\#)\times X$.
+
+Original Proposition 13(ii)--(iii) concerns the two coproduct summands; Lemma~\ref{lem:splitpullback} supplies the required decomposition on the source. For original Proposition 14, the strong union definition supplies the countable distributivity used in the printed proof: for any domain $a$, agreement on every $ad_n$ is agreement of the arrows precomposed with $a$ on every $d_n$, hence agreement on $ad$. Thus $ad=\bigcup_n ad_n$. In particular, if every $ad_n=0$, then $ad=0$. The printed argument is valid with this implicit prerequisite made explicit. Lemma~\ref{lem:dichotomy} then supplies the termination assertions of original Propositions 15 and 16, using the same connected source domain throughout.
+
+The original proof of Lemma 12 on p.~19 requires the last stage in $W$, not the least stage in $W$. Its converse also omits the selected exponent and uses $\Tur(1_W,r)$ where $\Tur(1_W,v)$ is required by the codomain. Section 6 supplies a complete replacement, including nontermination. In original Lemma 46, equality on equal-stage product domains requires equality of the full domains; Section 9 supplies the double-union argument with $k=\max(n,m)$. In that lemma's compatibility sentence on p.~39, the second repeated inverse-image exponent must be $n$, so the two domains are $(f^m)^{-1}[U]$ and $(f^n)^{-1}[U]$. In the relation construction on p.~33 and its use in original Proposition 39, the map with source $UX$ is the pairing $\langle U\phi_0,U\phi_1\rangle$, not the product $U\phi_0\times U\phi_1$, whose source is $UX\times UX$.
+
+\appendix
+\section{Finite generation and uniform catalogues}\label{sec:catalogue}
+The following finite set of structural constants gives the generation equality of original Lemma 8 and the uniform catalogue of original Lemma 7; compare Heller's Lemma 3.3 and Proposition 4.4~\cite{H}.
+
+Work in the formal one-generator category $\B\langle X\rangle$ and
+fix a frame $b=(b_\times,b_+,b_\#)$ at $X$. If object expressions
+have already been identified, Proposition~\ref{prop:formal-objects} gives a tagged copy
+with the same endomorphisms at $X$. For each formal object expression
+$A$, define an isomorphism $\theta_A:X\to A$ recursively by
+\[
+\theta_X=1_X,\qquad
+\theta_{A\times B}=(\theta_A\times\theta_B)b_\times,\qquad
+\theta_{A+B}=(\theta_A+\theta_B)b_+,\qquad
+\theta_{A^\#}=\theta_A^\#b_\#.
+\]
+An arrow $f:A\to B$ is transported to
+$\theta_B^{-1}f\theta_A\in\B(X,X)$. In particular, the
+transported operations on endomorphisms are
+\[
+f\times_b g=b_\times^{-1}(f\times g)b_\times,\qquad
+f+_b g=b_+^{-1}(f+g)b_+,\qquad
+f^{\#_b}=b_\#^{-1}f^\#b_\#.
+\]
+Together with composition and the transported structural maps,
+these operations form the $B^\#$-algebra associated with the fixed
+frame. We suppress the subscript $b$ while working in this algebra.
+Its composition unit is $1=1_X$, and functoriality gives
+$1+1=1\times1=1^\#=1$. For a subset $W$, write
+$\operatorname{alg}W$ for the smallest subset containing $W$ and
+the structural constants and closed under composition, $+$,
+$\times$, and $\#$. Write $\operatorname{mon}W$ for the submonoid
+generated by $W$, including the identity. Set $E(f)=(1+f)^\#$.
+
+The first-letter map is $\mathrm{first}_A=[1_A,p_0]l_A:A^\#\to A$; it satisfies $\mathrm{first}_Aj_A=1_A$. Naturality of the word-decomposition isomorphism defined in Section~\ref{sec:formal-semigroups} gives the six-block conjugation identity used below.
+
+Choose a finite set $N$ of closed structural terms containing the
+transported maps
+\[
+1,\ \Delta,\ p_0,\ p_1,\ \nabla,\ i_0,\ i_1,\ \dist,
+\ m,\ j,\ e,\ l,\ r,\ \operatorname{par},\ \mathrm{wd},
+\]
+the product and coproduct transpositions, $\mathrm{first}$,
+$\mathrm{wd}^{-1}$, the coproduct associator under $\#$ and its
+inverse, and $p_1^\#,\Delta^\#$. Include also the length-decomposition isomorphism and its inverse,
+\[
+L:X^\#\longrightarrow X+(X\times X)+((X\times X)\times X^\#),
+\]
+obtained by applying left decomposition twice. Include the distributivity isomorphisms, in both directions, expanding $(X+X)\times(X+X)$ and $((X+X)\times(X+X))\times X$ into four summands. Finally include block injections $J_I$ and retractions $R_I$ for every nonempty subset $I$ of the summands of a fixed sum of at most six copies of $X$. On selected summands $R_I$ uses the corresponding injection; on an omitted summand it uses the injection into the first selected summand. Thus
+\[
+R_I\Bigl(\bigoplus_{i=1}^n h_i\Bigr)J_I
+=\bigoplus_{i\in I}h_i.
+\]
+Include also all reassociations of sums of at most six copies of $X$, in both directions. There are finitely many such terms, independent of the set of generators below. Their images under frame transport are the constants included in $N$.
+
+\begin{lemma}\label{lem:finitegeneration}
+For any subset $W$ of this algebra,
+\[
+\operatorname{alg}W
+=\operatorname{mon}\bigl(N\cup\{E(f):f\in W\cup N\}\bigr).
+\]
+\end{lemma}
+\begin{proof}
+Let $M$ be the monoid on the right. The reverse inclusion is immediate because every member of $N$ is a closed structural term. If $E(f)\in M$, the identities
+\[
+1+f=\mathrm{first}\,E(f)j,\qquad
+f=\nabla(1+f)i_1
+\]
+put $f$ in $M$. In particular, $W\subseteq M$.
+
+Conjugating $(u+v)^\#$ by word decomposition yields the six summands
+\[
+u^\#+v^\#+(u^\#\times v^\#)^\#+(v^\#\times u^\#)^\#
+ +(v^\#\times(u^\#\times v^\#)^\#)
+ +(u^\#\times(v^\#\times u^\#)^\#).
+\]
+The block maps just included allow any nonempty subfamily to be extracted by composition. With $u=1$ and $v=g$, this shows that $E(g)\in M$ implies
+\[
+g^\#\in M,\qquad 1+g^\#\in M,\qquad
+(1\times g^\#)^\#\in M.
+\]
+If $a$ is the coproduct associator, naturality gives
+$E(1+f)=a^\#E(f)(a^{-1})^\#\in M$, since $1+1=1$.
+The preceding extraction, with $g=1+f$, therefore gives $1+E(f)\in M$.
+
+Put $q=1+f$. Conjugating $q^\#=E(f)$ by $L$ gives
+$q+(q\times q)+((q\times q)\times q^\#)$.
+Extract the second and third summands and apply the two fixed distributivity isomorphisms. The four-summand decompositions contain respectively $1\times f$ and $(1\times1)\times q^\#=1\times E(f)$. Thus both belong to $M$.
+
+For every $g$ with $E(g)\in M$, the preceding word-decomposition calculation also gives
+\[
+g^{\#\#}=p_1^\#(1\times g^\#)^\#\Delta^\#\in M.
+\]
+Apply this with $g=1+f$, using $E(1+f)\in M$, to obtain $E(f)^\#\in M$.
+
+Consequently, for every monoid generator $h\in N\cup E(W\cup N)$, the three elements $1+h$, $1\times h$, and $h^\#$ lie in $M$. For $h\in N$, use the stipulated generator $E(h)$ and the same calculations. Functoriality extends these three properties to every $h\in M$. Transpositions also put $h+1$ and $h\times1$ in $M$. Finally,
+$f+g=(f+1)(1+g)$ and $f\times g=(f\times1)(1\times g)$
+prove closure under the remaining algebra operations. Thus $M$ is a subalgebra containing $W$.
+\end{proof}
+
+\begin{proposition}\label{prop:catalogue}
+Let $\B=\B\langle X\rangle$ be a uniformly generated isotypical $B^\#$-category. There is a catalogue $s:X\times X\to X$ in $\B$ whose uniform list generates $\B(X,X)$ as a semigroup.
+\end{proposition}
+\begin{proof}
+Recode the index object of a catalogue giving uniform generation along a frame isomorphism to obtain $t:X\times X\to X$ in $\B$. A finite family of endomorphisms can be added to any catalogue: take the coproduct of its index object with one copy of $X$ for each added arrow $u$, use $up_1$ on that copy, and recode the index object by the frame. The corresponding index for $u$ is the recoded coproduct injection. All arrows remain in $\B$.
+
+Enlarge $t$ in this way to include the finite set $N$ of Lemma~\ref{lem:finitegeneration}. Let $W$ be its uniform list. This list still generates the transported $B^\#$-algebra: it contains the original uniform list, and every new member belongs to $\B$. Work now with actual object types, rather than the transported operations. Define
+\[
+r=[i_0p_1,i_1t]\dist:X\times(X+X)\longrightarrow X+X.
+\]
+Set $b_0=(b_+)^\#b_\#:X\to(X+X)^\#$, where $b_+:X\to X+X$ and $b_\#:X\to X^\#$ are the chosen frame maps. Put
+\[
+s^-=b_0^{-1}r^\#\operatorname{par}(1_X\times b_0):X\times X\to X.
+\]
+Here $\operatorname{par}:X\times(X+X)^\#\to(X\times(X+X))^\#$ is the specified parameter map. If $t(g\times1_X)=fp_1$, coproduct calculation gives
+$r(g\times1_{X+X})=(1_X+f)p_1$.
+Naturality of $\operatorname{par}$ and its defining projection equation $p_1^\#\operatorname{par}=p_1$ then give
+\[
+s^-(g\times1_X)=b_0^{-1}(1_X+f)^\#b_0p_1.
+\]
+Thus $s^-$ catalogues the transported elements $E(f)$ for $f\in W$. Augment it by $N$ once more. Lemma~\ref{lem:finitegeneration} says that the resulting uniform list generates the endomorphism monoid. Since $1\in N$, the same list generates it as a semigroup, using nonempty products.
+\end{proof}
+
+For comparison with the proof of original Lemma~8 (pp.~12--13), write
+$N_{\mathrm{old}}$ for its printed finite set and use its notation
+\[
+W^\dagger=N_{\mathrm{old}}
+ \cup\{(1+f)^\#:f\in W\cup N_{\mathrm{old}}\},
+\qquad M_{\mathrm{old}}=\operatorname{mon}W^\dagger.
+\]
+In its step~(2), the selected subset of summands must be nonempty.
+In step~(4) on p.~12, $f\in N_{\mathrm{old}}$ implies
+$(1+f)^\#\in W^\dagger$, and hence
+$1+f=\mathrm{first}(1+f)^\#j\in M_{\mathrm{old}}$;
+it does not imply the printed membership $1+f\in W^\dagger$.
+The same step asserts generator membership for
+$(\mathrm{first}+1)^\#$ and $(j+1)^\#$, with the opposite
+orientation from $E(h)=(1+h)^\#$. Once word decomposition is
+available in the generated monoid, conjugation by the coproduct
+transposition under $\#$ supplies these elements in that monoid;
+it does not make them members of the specified generator set.
+In step~(6) on p.~13, the final sentence must read
+$1\times f=1\times(1+g)^\#$, not
+$1+f=1\times(1+g)^\#$.
+
+\section{The range representation theorem}\label{sec:range-representation}
+Original Theorem 42 (p.~38) admits a proof under the binary-product convention of a $P$-category. The domain construction and the range factorization are developed in Rosolini's thesis \cite[Sections 2.3--2.5]{RT}. They first give a category with binary products and pullbacks. The following completion supplies the terminal object required by the stated representation theorem, while preserving fullness on partial maps.
+
+A factorization system $(\mathcal E,\mathcal M)$ factors every arrow as $me$, with $e\in\mathcal E$ and $m\in\mathcal M$, and has a unique diagonal filler in every commutative square with left side in $\mathcal E$ and right side in $\mathcal M$. It is proper if every map in $\mathcal E$ is epic and every map in $\mathcal M$ is monic. For such a system on a category with pullbacks, $\operatorname{Par}(\mathcal A,\mathcal M)$ has the objects of $\mathcal A$ and isomorphism classes of spans $X\xleftarrow{m}D\xrightarrow{h}Y$ with $m\in\mathcal M$ as its arrows; composition is by pullback.
+
+\begin{lemma}\label{lem:terminal-completion}
+Let $\mathcal B$ be a category small in a chosen universe, with binary products and pullbacks, equipped with a proper factorization system $(\mathcal E,\mathcal M)$ whose two classes are pullback-stable. Allow a larger universe for the target. There are a finitely complete category $\mathcal A$, a proper pullback-stable factorization system $(\mathcal E',\mathcal M')$ on $\mathcal A$, and a fully faithful functor $J:\mathcal B\to\mathcal A$ preserving binary products, pullbacks, and the two factorization classes. Moreover, the induced functor
+\[
+\operatorname{Par}(\mathcal B,\mathcal M)
+ \longrightarrow\operatorname{Par}(\mathcal A,\mathcal M')
+\]
+is a full $P$-embedding.
+\end{lemma}
+\begin{proof}
+Choose a universe in which $\mathcal B$ is small, enlarging the universe when forming the functor category below.
+
+An object of $\mathcal A$ is a functor $F:\mathcal B\to\mathcal B$ with a natural transformation $p:F\Rightarrow1_{\mathcal B}$ whose naturality squares are pullbacks. A morphism $(F,p)\to(G,q)$ is a natural transformation $u:F\Rightarrow G$ with $qu=p$. We call $(F,p)$ a \emph{cartesian family}: its maps $p_X:F(X)\to X$ are compatible with change of base. The terminal object is $(1_{\mathcal B},1)$, since the unique map to it from $(F,p)$ is $p$.
+
+Finite limits are computed at each $X$ in the slice $\mathcal B/X$. These slices have finite limits, and pullback functors between them preserve those limits. The resulting family is therefore again compatible with change of base, proving finite completeness of $\mathcal A$.
+
+Factor the component of $u:F\Rightarrow G$ at $X$ as
+\[
+F(X)\xrightarrow{e_X}H(X)\xrightarrow{m_X}G(X),
+\qquad e_X\in\mathcal E,\quad m_X\in\mathcal M.
+\]
+For $a:X\to Y$, orthogonality gives the unique $H(a):H(X)\to H(Y)$ satisfying
+\[
+H(a)e_X=e_YF(a),\qquad m_YH(a)=G(a)m_X.
+\]
+Uniqueness gives the functor laws. Equip $H$ with the structure maps $q_Xm_X:H(X)\to X$. Pulling the factorization at $Y$ back along $a$ gives a factorization of $u_X$, because both factorization classes are pullback-stable and $F,G$ are cartesian families. Uniqueness of factorization identifies its middle object with $H(X)$. Hence the structure transformation of $H$ is cartesian.
+
+Define $\mathcal E'$ and $\mathcal M'$ componentwise from $\mathcal E$ and $\mathcal M$. Componentwise diagonal fillers are natural by uniqueness. Thus these classes give a factorization system. They are proper, since componentwise epimorphisms and monomorphisms are epimorphisms and monomorphisms of natural transformations. The slice description of limits proves pullback stability of both classes.
+
+Define $J$ by
+\[
+J(A)_X=(X\times A\xrightarrow{\pi_X}X),
+\qquad J(f)_X=1_X\times f.
+\]
+Projection squares are pullbacks, so these are cartesian families. Fibre products give
+$(X\times A)\times_X(X\times B)\cong X\times(A\times B)$;
+hence $J$ preserves binary products. The same calculation for pullbacks shows that it preserves pullbacks. Both factorization classes are preserved, since $1_X\times f$ is a pullback of $f$.
+
+To prove fullness, let $u:J(A)\to J(B)$. Write
+$u_X=\langle\pi_X,v_X\rangle$, where $v_X:X\times A\to B$.
+Naturality gives
+\[
+v_X(a\times1_A)=v_T\qquad(a:T\to X).
+\]
+Put $f=v_A\Delta_A:A\to B$. For $T=X\times A$, apply naturality to $\pi_X:T\to X$ and $\pi_A:T\to A$, and precompose with
+$s=\langle1_T,\pi_A\rangle:T\to T\times A$.
+The two equations give
+\[
+v_X=v_Ts=v_A\Delta_A\pi_A=f\pi_A.
+\]
+Thus $u=J(f)$. The diagonal formula for $f$ proves uniqueness, so $J$ is fully faithful.
+
+To prove fullness on partial maps, let $m:D\to J(A)$ belong to $\mathcal M'$. At the base object $A$, form the pullback
+\[
+\begin{tikzcd}
+U\arrow[r,"\ell"]\arrow[d,"k"']&D(A)\arrow[d,"m_A"]\\
+A\arrow[r,"\Delta_A"']&A\times A.
+\end{tikzcd}
+\]
+Its left leg $k$ belongs to $\mathcal M$. Every naturality square of a morphism between cartesian families is itself a pullback: after the two families are identified with their pullbacks along the base map, the morphism is the pulled-back morphism.
+
+Fix $X$, put $T=X\times A$, and use the section $s:T\to T\times A$ just defined. Pull back $m_T$ along $s$. Naturality along $\pi_X$ identifies this pullback with $m_X:D(X)\to X\times A$, since
+$(\pi_X\times1_A)s=1_T$.
+Naturality along $\pi_A$ identifies the same pullback with the pullback of $m_A$ along $\Delta_A\pi_A$, since
+$(\pi_A\times1_A)s=\Delta_A\pi_A$.
+By the displayed square, the latter is
+$1_X\times k:X\times U\to X\times A$.
+Thus $D(X)\cong X\times U$ over $X\times A$. These isomorphisms are natural, by uniqueness of the pullback comparisons. Consequently,
+\[
+(D\xrightarrow{m}J(A))\cong(J(U)\xrightarrow{J(k)}J(A)).
+\]
+Every partial span between $J(A)$ and $J(B)$ therefore has an isomorphic representative with middle object $J(U)$ and left leg $J(k)$. Fullness of $J$ writes its right leg uniquely as $J(h)$, for $h:U\to B$. Fullness and faithfulness on the isomorphisms comparing spans then prove that the induced partial-map functor is fully faithful. Its product preservation follows from that of $J$.
+\end{proof}
+
+\begin{theorem}[Original Theorem 42, p.~38]\label{thm:range-representation}
+Let $\C$ be a $P$-category small in a chosen universe, and allow the representation category in a larger universe. Then $\C$ has ranges satisfying
+$\ran(f\boxtimes g)=\ran(f)\boxtimes\ran(g)$
+if and only if it is equivalent to a full $P$-subcategory of
+$\operatorname{Par}(\mathcal A,\mathcal M)$,
+where $\mathcal A$ has finite limits and $(\mathcal E,\mathcal M)$ is a proper factorization system whose two classes are stable under pullback.
+\end{theorem}
+\begin{proof}
+Suppose first that $\C$ has the indicated ranges. Write $d(f)=\dom f$ and $r(f)=\ran f$. Let $\mathcal B=\operatorname{Dom}(\C)$. Its objects are pairs $(X,e)$ with $e$ a domain idempotent on $X$. An arrow
+$f:(X,e)\to(Y,h)$ is a $\C$-arrow satisfying $d(f)=e$ and $hf=f$; its identity is $e$. Let $\mathcal M_0$ be the isomorphism-closed class of domain inclusions, represented by
+$e:(X,e)\to(X,h)$ for $e\leq h$.
+The domain identities show that these maps are monic, closed under composition, and stable under pullback: the inverse image of a domain under $f$ is the domain of the composite with $f$. Products are
+\[
+(X,e)\times(Y,h)=(X\boxtimes Y,e\boxtimes h).
+\]
+There is a full $P$-embedding
+$I:\C\to\operatorname{Par}(\mathcal B,\mathcal M_0)$
+given by $I(X)=(X,1_X)$ and
+\[
+I(f)=\bigl[(X,1_X)\xleftarrow{d(f)}(X,d(f))\xrightarrow{f}(Y,1_Y)\bigr].
+\]
+Indeed, every $\mathcal M_0$-domain over $(X,1_X)$ is isomorphic to $(X,e)$ with its domain inclusion, and a total arrow from this object to $(Y,1_Y)$ is exactly an original arrow with domain $e$. Composition and products agree by the domain identities. This proves fullness as well as faithfulness.
+
+Let $\mathcal E_0$ consist of arrows $f:(X,e)\to(Y,h)$ with $r(f)=h$. Every arrow has the factorization
+\[
+(X,e)\xrightarrow{f}(Y,r(f))\xrightarrow{r(f)}(Y,h).
+\]
+The range lies below $h$, since $hf=f$ implies $hr(f)=r(f)$. An $\mathcal E_0$-map is epic: $uf=vf$ gives $ur(f)=vr(f)$, which is $u=v$ on its target object.
+
+The two classes are orthogonal. For a square with left side $e:U\to V$ in $\mathcal E_0$ and right side a domain inclusion represented by $k$, let $b$ be the bottom arrow. Commutativity gives $kbe=be$. Range arrow-determination gives $kb=b$, so $b$ corestricts to the domain of $k$. This is the required diagonal; uniqueness follows from monicity. Factoring every arrow as above and applying this lifting property identifies the two orthogonal classes, hence gives a proper factorization system.
+
+Every split monomorphism lies in $\mathcal M_0$. If $s=me$ is its factorization and $ts=1$, then $(tm)e=1$. Since $e$ is epic, its left inverse is also a right inverse. Thus $e$ is invertible. In particular, diagonals and graphs belong to $\mathcal M_0$. Equalizers are obtained by pulling a diagonal back along the pairing of the two arrows. Together with binary products these give all pullbacks.
+
+The class $\mathcal E_0$ is pullback-stable. First pull a full-range map $e:U\to V$ back along a domain inclusion represented by $k$. The resulting map is represented by $ke$, with its domain as source and the domain object $k$ as target. Its range is $k$: from $ake=bke$, the range property of $e$ gives $ak=bk$. Thus the pullback lies in $\mathcal E_0$. Next, pullback along a projection gives $e\times1_Z$, which has full range by product-distribution. Every map is its graph followed by a projection, and its graph lies in $\mathcal M_0$. Successive pullback therefore proves stability along every map.
+
+Apply Lemma~\ref{lem:terminal-completion} to $\mathcal B$ and compose its partial-map embedding with $I$. The resulting target is finitely complete and has the required proper pullback-stable factorization system. This proves necessity. If $\C$ is empty, use the empty full subcategory of the partial-map category of the terminal category instead.
+
+Conversely, let $(\mathcal E,\mathcal M)$ be as stated, and represent a partial arrow by $[m,h]:X\rightharpoonup Y$. Factor $h=ie$ with $e\in\mathcal E$ and $i\in\mathcal M$, and define its range to be $[i,i]$. This partial identity receives $[m,h]$.
+
+Suppose that $a[m,h]=b[m,h]$ for partial maps $a,b:Y\rightharpoonup Z$. Pull their domains back to the source $R$ of $i$, obtaining $\mathcal M$-subobjects $R_a,R_b\hookrightarrow R$. Their further pullbacks along $e$ agree, with equal value maps. This follows from equality of the composite spans and monicity of $m$.
+
+Pullback along $e$ reflects equality of $\mathcal M$-subobjects. Indeed, an inclusion $e^*R_a\leq e^*R_b$ gives a lifting square whose left side is the pullback $e^*R_a\to R_a$ of $e$ and whose right side is $R_b\hookrightarrow R$. Orthogonality supplies $R_a\to R_b$ over $R$. Applying the same argument to the reverse inclusion proves $R_a=R_b$. On this common domain the value maps agree after a pullback of $e$, which is epic. They therefore agree. Hence $a[i,i]=b[i,i]$, including equality of domains, and $[i,i]$ is a range.
+
+Both factorization classes are closed under binary products, since a product of two maps is a composite of their pullbacks. Taking products of the factorizations consequently proves
+$\ran(f\boxtimes g)=\ran(f)\boxtimes\ran(g)$.
+A full $P$-subcategory inherits the range endomorphisms and their equations; a $P$-equivalence transports them. This proves sufficiency.
+\end{proof}
+
+\begin{thebibliography}{9}
+\bibitem{RT} G. Rosolini, \emph{Continuity and effectiveness in topoi}, D.Phil. thesis, University of Oxford, 1986; author's 1995 retypesetting, Theorem 2.1.9 and Sections 2.3--2.5.
+\bibitem{RK} A. Kurz, \emph{Coalgebras and Modal Logic}, ESSLLI 2001 lecture notes, Definition 2.2.11 and footnote 5.
+\bibitem{L} F. Lengyel, \emph{More existence theorems for recursion categories}, Annals of Pure and Applied Logic 125 (2004), 1--41. DOI: 10.1016/S0168-0072(03)00060-5.
+\bibitem{H} A. Heller, \emph{An existence theorem for recursion categories}, Journal of Symbolic Logic 55 (1990), no.~3, 1252--1268.
+\bibitem{GS} H. P. Gumm and T. Schr\"oder, \emph{Products of coalgebras}, Algebra Universalis 46 (2001), 163--185.
+\bibitem{GSW} H. P. Gumm and T. Schr\"oder, \emph{Coalgebraic structure from weak limit preserving functors}, Electronic Notes in Theoretical Computer Science 33 (2000), Theorem 5.7(i).
+\bibitem{E} F. Lengyel, \emph{Erratum to the proof of Lemma 24 in More existence theorems for recursion categories}, unpublished manuscript, undated.
+\end{thebibliography}
+\end{document}
